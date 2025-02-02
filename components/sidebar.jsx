@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/sidebar"
 
 const sidebarItems = [
-  { title: "Home", icon: Home, href: "/dashboard" },
+  { title: "Home", icon: Home, href: "/dashboard/home" },
   { title: "Journal", icon: Book, href: "/dashboard/journal" },
   { title: "Mood Tracker", icon: Smile, href: "/dashboard/mood-tracker" },
   { title: "History", icon: History, href: "/dashboard/history" },
@@ -72,7 +72,7 @@ export function ModernSidebar() {
                   <SidebarNavItem
                     key={item.href}
                     href={item.href}
-                    className="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-accent transition-all duration-200 ease-in-out"
+                    className="flex items-center gap-4 px-4 py-3 rounded-xl  transition-all duration-200 ease-in-out"
                   >
                     <item.icon className="h-6 w-6" />
                     <span className="text-lg font-medium">{item.title}</span>
