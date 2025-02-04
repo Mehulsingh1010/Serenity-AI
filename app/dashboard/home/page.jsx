@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useUser } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -64,12 +65,13 @@ const MenuBar = ({ editor }) => {
   )
 }
 
+// const userId=u
 export default function MoodJournal() {
   const [title, setTitle] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [currentAnalysis, setCurrentAnalysis] = useState(null)
   const [currentAnalysisTab, setCurrentAnalysisTab] = useState("summary")
-
+  const user=useUser();
   const editor = useEditor({
     extensions: [StarterKit, Highlight, TaskList, TaskItem],
   })
@@ -82,8 +84,7 @@ export default function MoodJournal() {
       const response = await fetch("/api/dashboard/home", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: 1, title, content: editor.getHTML() }),
-      })
+        body: JSON.stringify({ userId: user.user.id, title, content: editor.getHTML() }),      })
       const data = await response.json()
       if (data.error) {
         throw new Error(data.error)

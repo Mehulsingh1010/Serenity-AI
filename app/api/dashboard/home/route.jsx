@@ -59,7 +59,7 @@ export async function POST(req) {
     const [journal] = await db
       .insert(JOURNAL_TABLE)
       .values({
-        userId,
+        userId, //not able to fetch
         title,
         content,
         moodScore: analysis.moodScore,

@@ -13,8 +13,11 @@ import { pdf } from "@react-pdf/renderer"
 import JournalPDFReport from "@/components/JournalPDFReport"
 import JSZip from "jszip"
 import { useToast } from "@/hooks/use-toast"
+import { useUser, useAuth } from "@clerk/nextjs"
 
 export default function JournalHistory() {
+  const { user, isLoaded: userLoaded, isSignedIn } = useUser()
+  const { getToken } = useAuth()
   const [journals, setJournals] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
   const [sortOrder, setSortOrder] = useState("desc")
@@ -23,16 +26,31 @@ export default function JournalHistory() {
   const { toast } = useToast()
 
   useEffect(() => {
-    fetchJournals()
-  }, [])
+    if (userLoaded && isSignedIn) {
+      fetchJournals()
+    }
+  }, [userLoaded, isSignedIn])
 
   const fetchJournals = async () => {
     try {
       setLoading(true)
-      const response = await fetch("/api/dashboard/home?userId=1")
+      const token = await getToken()
+      
+      if (!user?.id) {
+        throw new Error("User not authenticated")
+      }
+
+      const response = await fetch(`/api/journals/list`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      })
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
+
       const data = await response.json()
       if (!data.journals) {
         throw new Error("No journals data received")
@@ -43,7 +61,7 @@ export default function JournalHistory() {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to fetch journals. Please try again later.",
+        description: error.message || "Failed to fetch journals. Please try again later.",
       })
       setJournals([])
     } finally {
@@ -137,6 +155,14 @@ export default function JournalHistory() {
         description: error.message || "Failed to download reports. Please try again.",
       })
     }
+  }
+
+  if (!userLoaded || (userLoaded && !isSignedIn)) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-500"></div>
+      </div>
+    )
   }
 
   if (loading) {
@@ -248,4 +274,3 @@ export default function JournalHistory() {
     </div>
   )
 }
-
