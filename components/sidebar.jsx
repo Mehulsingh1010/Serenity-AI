@@ -70,7 +70,7 @@ export function ModernSidebar() {
                   <SidebarNavItem
                     key={item.href}
                     href={item.href}
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-accent/50 transition-colors"
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg"
                   >
                     <item.icon className="h-5 w-5" />
                     <span className="text-base font-medium">{item.title}</span>
