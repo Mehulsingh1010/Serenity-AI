@@ -16,7 +16,7 @@ import {
 
 const sidebarItems = [
   { title: "Home", icon: Home, href: "/dashboard/home" },
-  { title: "Journal", icon: Book, href: "/dashboard/journal" },
+  { title: "Journal-History", icon: Book, href: "/dashboard/journal" },
   { title: "Mood Tracker", icon: Smile, href: "/dashboard/mood-tracker" },
   { title: "History", icon: History, href: "/dashboard/history" },
   { title: "Settings", icon: Settings, href: "/dashboard/settings" },
