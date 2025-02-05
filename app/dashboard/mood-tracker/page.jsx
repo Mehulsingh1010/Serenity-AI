@@ -1,10 +1,11 @@
-// app/dashboard/mood-tracker/page.tsx
 "use client"
 
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
-import { Loader2, TrendingUp, TrendingDown, Activity, Calendar } from "lucide-react"
+import { Loader2, TrendingUp, TrendingDown, Activity, Calendar, PenLine } from "lucide-react"
+import Link from "next/link"
 
 export default function MoodTrackerPage() {
   const [data, setData] = useState(null)
@@ -44,6 +45,26 @@ export default function MoodTrackerPage() {
     return (
       <div className="p-4 text-red-500">
         {error}
+      </div>
+    )
+  }
+
+  // No data handling
+  if (!data || !data.moodData || data.moodData.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] text-center space-y-6">
+        <PenLine className="h-16 w-16 text-muted-foreground" />
+        <div>
+          <h2 className="text-2xl font-bold mb-2">No Journal Entries Yet</h2>
+          <p className="text-muted-foreground mb-4">
+            Start tracking your mood by writing a few journals
+          </p>
+          <Link href="/dashboard/home">
+            <Button>
+              Create First Entry
+            </Button>
+          </Link>
+        </div>
       </div>
     )
   }
@@ -95,6 +116,7 @@ export default function MoodTrackerPage() {
             <CardTitle className="text-sm font-medium">Highest Mood</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
+          
           <CardContent>
             <div className="text-2xl font-bold">{moodStats?.highest}</div>
           </CardContent>
