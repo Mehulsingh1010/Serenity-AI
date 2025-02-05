@@ -7,7 +7,7 @@ const page = () => {
     
 
 
-    <h1>hello</h1>
+    <h1>Under Dev</h1>
     </div>
   )
 }
