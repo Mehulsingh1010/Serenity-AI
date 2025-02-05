@@ -17,7 +17,35 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "SerenityAI +",
   description: "Your personal AI-powered journaling companion",
-}
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
+  openGraph: {
+    title: "SerenityAI +",
+    description: "Your personal AI-powered journaling companion",
+    url: "https://serenity-ai-seven.vercel.app/",
+    siteName: "SerenityAI +",
+    images: [
+      {
+        url: "/preview.png",
+        width: 1200,
+        height: 630,
+        alt: "SerenityAI Preview Image",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SerenityAI +",
+    description: "Your personal AI-powered journaling companion",
+    site: "@your_twitter_handle",
+    images: ["/preview.png"],
+  },
+  themeColor: "#ffffff",
+  manifest: "/site.webmanifest",
+};
 
 function RootLayoutContent({ children }) {
   return (
