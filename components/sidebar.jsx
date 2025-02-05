@@ -58,7 +58,7 @@ export function ModernSidebar() {
       >
         <SidebarHeader className="p-6 flex items-center justify-between relative border-b">
           <div className="flex items-center space-x-3">
-            <HeartPulse className="w-10 h-10" /> {/* Use the HeartPulse icon in the sidebar header */}
+            <HeartPulse className="w-10 h-10" /> 
             <h1 className="text-2xl font-bold ">
               SerenityAI +
             </h1>

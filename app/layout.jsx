@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata = {
-  title: "Your App Name",
-  description: "Description of your app",
+  title: "SerenityAI +",
+  description: "Your personal AI-powered journaling companion",
 }
 
 function RootLayoutContent({ children }) {
@@ -24,22 +24,10 @@ function RootLayoutContent({ children }) {
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body suppressHydrationWarning>
         <Provider>
-          <div className="min-h-screen bg-background flex">
+          <div className="min-h-screen bg-background">
             <ModernSidebar />
-            <main
-              className="
-                min-h-screen 
-                transition-all 
-                duration-300 
-                pt-20 
-                md:pt-8 
-                px-4 
-                md:px-8
-                flex-1 
-                md:ml-64
-              "
-            >
-              <div className="max-w-7xl mx-auto px-4 md:px-4 transition-all duration-300">{children}</div>
+            <main className="min-h-screen md:pl-[280px] pt-[72px] md:pt-0">
+              <div className="container mx-auto p-6 max-w-7xl">{children}</div>
             </main>
           </div>
         </Provider>
