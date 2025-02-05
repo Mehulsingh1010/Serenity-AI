@@ -44,7 +44,7 @@ export const metadata = {
     images: ["/preview.png"],
   },
   themeColor: "#ffffff",
-  manifest: "/site.webmanifest",
+  
 };
 
 function RootLayoutContent({ children }) {

@@ -4,7 +4,7 @@ import { useState } from "react"
 import { UserButton, useUser } from "@clerk/nextjs"
 import { Home, Book, Smile, History, Settings, Menu, X, HeartPulse } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import {logo} from "./logo.png"
+
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Sidebar,
@@ -34,7 +34,7 @@ export function ModernSidebar() {
       {/* Mobile Header */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b p-4 flex justify-between items-center">
         <div className="flex items-center space-x-3">
-          <img src={logo} alt="" />
+          <HeartPulse className="w-6 h-6" />
           <h1 className="text-lg font-bold">SerenityAI +</h1>
         </div>
         <div className="flex items-center space-x-4">
