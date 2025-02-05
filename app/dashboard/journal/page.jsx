@@ -34,17 +34,14 @@ export default function JournalHistory() {
   const fetchJournals = async () => {
     try {
       setLoading(true)
-      const token = await getToken()
-      
+
       if (!user?.id) {
         throw new Error("User not authenticated")
       }
 
-      const response = await fetch(`/api/journals/list`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        }
+      const response = await fetch("/api/dashboard/journal-history", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
       })
 
       if (!response.ok) {
@@ -274,3 +271,4 @@ export default function JournalHistory() {
     </div>
   )
 }
+

@@ -74,20 +74,22 @@ export async function POST(req) {
   }
 }
 
-export async function GET(req) {
-  const { searchParams } = new URL(req.url)
-  const userId = searchParams.get("userId")
 
-  if (!userId) {
-    return NextResponse.json({ error: "User ID is required" }, { status: 400 })
+export async function GET(req) {
+  const session = await session({ req })
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
+
+  const userId = session.user.id
 
   try {
     const journals = await db
       .select()
       .from(JOURNAL_TABLE)
-      .where(eq(JOURNAL_TABLE.userId, Number.parseInt(userId)))
-      .orderBy(JOURNAL_TABLE.createdAt)
+      .where(eq(JOURNAL_TABLE.userId, userId))
+      .orderBy(JOURNAL_TABLE.createdAt.desc())
     return NextResponse.json({ journals })
   } catch (error) {
     console.error("Error:", error)
