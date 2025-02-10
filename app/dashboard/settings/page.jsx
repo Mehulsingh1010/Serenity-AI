@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { Button } from "../../../components/ui/button";
+import { Switch } from "../../../components/ui/switch";
+import { Label } from "../../../components/ui/label";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,7 +15,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from "../../../components/ui/alert-dialog";
 import { deleteUserJournals } from "./journal-actions";
 import { toast } from "sonner";
 

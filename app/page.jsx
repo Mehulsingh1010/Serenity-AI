@@ -9,9 +9,9 @@ import { useRef } from "react"
 import { AnimatedCard } from "./_components/animated-card"
 import { ParticleBackground } from "./_components/particle-background"
 import { TechStackCarousel } from "./_components/tech-stack-carousel"
-import { Button } from "@/components/ui/button"
-import { CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
+import { Button } from "../components/ui/button"
+import { CardContent } from "..//components/ui/card"
+import { Separator } from "../components/ui/separator"
 import { SolutionShowcase } from "./_components/solution-showcase"
 export default function LandingPage() {
   const targetRef = useRef(null);
@@ -29,16 +29,19 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gray-100">
-      {/* Background Image */}
+      {/* Background Image with improved positioning */}
       <div className="absolute inset-0 w-full h-full">
         <Image
-          src="/mood-dash.png"
+          src="/dash.png"
           alt="Dashboard Background"
-          layout="fill"
-          objectFit="cover"
-          className="opacity-30"
+          fill
+          className="object-cover object-center opacity-30"
+          priority
         />
       </div>
+
+      {/* Logo */}
+     
       
       {/* Content Wrapper */}
       <div className="container px-6 mx-auto text-center relative z-10">
@@ -50,14 +53,24 @@ export default function LandingPage() {
         >
           {/* Animated Title */}
           <motion.div
-            animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
-            className="bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-clip-text text-transparent bg-[length:200%_auto]"
-          >
-            <h1 className="text-5xl font-extrabold text-black tracking-tight sm:text-7xl drop-shadow-lg">
-              Welcome to Serenity AI
-            </h1>
-          </motion.div>
+  animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
+  transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+  className="flex flex-col items-center justify-center space-y-8 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-clip-text text-transparent bg-[length:200%_auto]"
+>
+  <div className="relative w-48 h-48 mb-4">
+    <Image 
+      src="/logo.png" 
+      alt="Serenity AI" 
+      fill
+      className="object-contain"
+      priority
+    />
+  </div>
+  
+  <h1 className="text-5xl font-extrabold text-black tracking-tight sm:text-7xl drop-shadow-lg text-center">
+    Welcome to Serenity AI
+  </h1>
+</motion.div>
           
           {/* Subtitle */}
           <p className="text-xl text-gray-700 dark:text-gray-300">
@@ -158,7 +171,7 @@ export default function LandingPage() {
           <SolutionShowcase
             title="Comprehensive Mood Tracking"
             description="Visualize your emotional journey with detailed mood tracking, helping you identify triggers and patterns over time."
-            imageSrc="/mood-dash.png"
+            imageSrc="/dash.png"
             reverse
           />
           <SolutionShowcase

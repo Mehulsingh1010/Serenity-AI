@@ -3,9 +3,9 @@
 import { useState } from "react"
 import { UserButton, useUser } from "@clerk/nextjs"
 import { Home, Book, Smile, History, Settings, Menu, X, HeartPulse } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Button } from "../components/ui/button"
 
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { ScrollArea } from "../components/ui/scroll-area"
 import {
   Sidebar,
   SidebarContent,
@@ -13,7 +13,7 @@ import {
   SidebarHeader,
   SidebarNav,
   SidebarNavItem,
-} from "@/components/ui/sidebar"
+} from "../components/ui/sidebar"
 
 const sidebarItems = [
   { title: "Home", icon: Home, href: "/dashboard/home" },
@@ -39,7 +39,6 @@ export function ModernSidebar() {
         </div>
         <div className="flex items-center space-x-4">
           <UserButton
-            afterSignOutUrl="/"
             appearance={{
               elements: {
                 avatarBox: "h-8 w-8",

@@ -1,6 +1,6 @@
 // app/api/mood-tracker/route.ts
-import { db } from "@/configs/db"
-import { JOURNAL_TABLE } from "@/configs/schema"
+import { db } from "../../../../configs/db"
+import { JOURNAL_TABLE } from "../../../../configs/schema"
 import { eq } from "drizzle-orm"
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"

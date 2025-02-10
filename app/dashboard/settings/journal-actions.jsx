@@ -1,7 +1,7 @@
 "use server"
 
-import { db } from "@/configs/db"
-import { JOURNAL_TABLE } from "@/configs/schema"
+import { db } from "../../../configs/db"
+import { JOURNAL_TABLE } from "../../../configs/schema"
 import { eq } from "drizzle-orm"
 
 export async function deleteUserJournals(userId) {

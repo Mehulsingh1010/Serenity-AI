@@ -2,7 +2,7 @@ import { Geist, Azeret_Mono as Geist_Mono } from "next/font/google"
 import "./globals.css"
 import { ClerkProvider } from "@clerk/nextjs"
 import Provider from "./provider"
-import { ModernSidebar } from "@/components/sidebar"
+// import { ModernSidebar } from "@/components/sidebar"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -2,9 +2,9 @@
 
 import { useState } from "react"
 import { useUser } from "@clerk/nextjs"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+import { Button } from "../../../components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../../components/ui/card"
+import { Input } from "../../../components/ui/input"
 import { ThumbsUp, ThumbsDown, Heart, BookOpen, Lightbulb } from 'lucide-react'
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
@@ -12,8 +12,8 @@ import Highlight from "@tiptap/extension-highlight"
 import TaskList from "@tiptap/extension-task-list"
 import TaskItem from "@tiptap/extension-task-item"
 import { motion } from "framer-motion"
-import { toast } from "@/hooks/use-toast"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { toast } from "../../../hooks/use-toast"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs"
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
 const MenuBar = ({ editor }) => {
