@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server"
-import { db } from "@/configs/db"
-import { JOURNAL_TABLE } from "@/configs/schema"
+import { db } from "../../../../configs/db"
+import { JOURNAL_TABLE } from "../../../../configs/schema"
 import { eq } from "drizzle-orm"
 import { pdf } from "@react-pdf/renderer"
-import JournalPDFReport from "@/components/JournalPDFReport"
+import JournalPDFReport from "../../../../../../components/JournalPDFReport"
 
 export async function GET(req, { params }) {
   const { id } = params
