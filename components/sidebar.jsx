@@ -1,10 +1,10 @@
 "use client"
 
-import { useState } from "react"
-import { UserButton, useUser } from "@clerk/nextjs"
+import { useState, useEffect } from "react"
+import { UserButton, useUser, useClerk } from "@clerk/nextjs"
 import { Home, Book, Smile, History, Settings, Menu, X, HeartPulse } from "lucide-react"
 import { Button } from "../components/ui/button"
-
+import { useRouter } from "next/navigation"
 import { ScrollArea } from "../components/ui/scroll-area"
 import {
   Sidebar,
@@ -19,15 +19,22 @@ const sidebarItems = [
   { title: "Home", icon: Home, href: "/dashboard/home" },
   { title: "Journal-History", icon: Book, href: "/dashboard/journal" },
   { title: "Mood Tracker", icon: Smile, href: "/dashboard/mood-tracker" },
-  // { title: "History", icon: History, href: "/dashboard/history" },
   { title: "Settings", icon: Settings, href: "/dashboard/settings" },
 ]
 
 export function ModernSidebar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const { user } = useUser()
+  const { signOut } = useClerk()
+  const router = useRouter()
 
   const toggleMobileSidebar = () => setIsMobileOpen(!isMobileOpen)
+
+  const handleSignOut = async () => {
+    await signOut()
+    router.push("/")
+    router.refresh()
+  }
 
   return (
     <>
@@ -44,6 +51,7 @@ export function ModernSidebar() {
                 avatarBox: "h-8 w-8",
               },
             }}
+            signOutCallback={handleSignOut}
           />
           <Button variant="ghost" size="sm" className="p-1" onClick={toggleMobileSidebar}>
             {isMobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -90,6 +98,7 @@ export function ModernSidebar() {
                   avatarBox: "h-10 w-10",
                 },
               }}
+              signOutCallback={handleSignOut}
             />
             {user && (
               <div className="flex flex-col min-w-0">
