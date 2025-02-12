@@ -5,7 +5,13 @@ import { useUser } from "@clerk/nextjs"
 import { Button } from "../../../components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../../components/ui/card"
 import { Input } from "../../../components/ui/input"
-import { ThumbsUp, ThumbsDown, Heart, BookOpen, Lightbulb } from 'lucide-react'
+import { ThumbsUp, ThumbsDown, Heart, BookOpen, Lightbulb, Info } from 'lucide-react'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../../../components/ui/tooltip"
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import Highlight from "@tiptap/extension-highlight"
@@ -14,7 +20,7 @@ import TaskItem from "@tiptap/extension-task-item"
 import { motion } from "framer-motion"
 import { toast } from "../../../hooks/use-toast"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs"
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
+import { LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts'
 
 const MenuBar = ({ editor }) => {
   if (!editor) return null
@@ -65,13 +71,12 @@ const MenuBar = ({ editor }) => {
   )
 }
 
-// const userId=u
 export default function MoodJournal() {
   const [title, setTitle] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [currentAnalysis, setCurrentAnalysis] = useState(null)
   const [currentAnalysisTab, setCurrentAnalysisTab] = useState("summary")
-  const user=useUser();
+  const user = useUser()
   const editor = useEditor({
     extensions: [StarterKit, Highlight, TaskList, TaskItem],
   })
@@ -84,7 +89,8 @@ export default function MoodJournal() {
       const response = await fetch("/api/dashboard/home", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.user.id, title, content: editor.getHTML() }),      })
+        body: JSON.stringify({ userId: user.user.id, title, content: editor.getHTML() }),
+      })
       const data = await response.json()
       if (data.error) {
         throw new Error(data.error)
@@ -154,7 +160,7 @@ export default function MoodJournal() {
               ]}>
                 <XAxis dataKey="time" />
                 <YAxis />
-                <Tooltip />
+                <RechartsTooltip />
                 <Line type="monotone" dataKey="intensity" stroke="#8b5cf6" />
               </LineChart>
             </ResponsiveContainer>
@@ -218,14 +224,39 @@ export default function MoodJournal() {
 
   return (
     <div className="container mx-auto p-4 font-sans">
-      <motion.h1
-        className="text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        Reflective Journey
-      </motion.h1>
+      <div className="flex justify-between items-center mb-6">
+        <motion.h1
+          className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          Reflective Journey
+        </motion.h1>
+        
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" className="rounded-full">
+                <Info className="h-5 w-5 text-purple-600" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-sm p-4 bg-white shadow-lg rounded-lg border border-purple-100">
+              <div className="space-y-2">
+                <h3 className="font-semibold text-purple-700">How to Use This Journal</h3>
+                <ol className="text-sm space-y-1 text-gray-600">
+                  <li>1. Enter a meaningful title for your entry</li>
+                  <li>2. Write your thoughts, feelings, and experiences in the journal area</li>
+                  <li>3. Use the formatting tools to organize your content</li>
+                  <li>4. Click "Save Entry" to submit and receive an AI-powered analysis</li>
+                  <li>5. Review your personalized insights in the Analysis section</li>
+                </ol>
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Entry Section */}
         <motion.div
