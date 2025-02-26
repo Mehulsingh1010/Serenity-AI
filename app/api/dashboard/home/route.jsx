@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server"
-import { db} from "../../../../configs/db"
+import { db } from "../../../../configs/db"
 import { JOURNAL_TABLE } from "../../../../configs/schema"
 import { eq } from "drizzle-orm"
 import { GoogleGenerativeAI } from "@google/generative-ai"
 
+// Initialize the Google AI client with API key
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "")
 
 const ANALYSIS_PROMPT = `Analyze this journal entry and provide a detailed response in the following JSON format:
-
 {
   "moodScore": <number between 1-10>,
   "summary": "<In depth summary/overview atleast 600 words of emotional state>",
@@ -24,76 +24,125 @@ const ANALYSIS_PROMPT = `Analyze this journal entry and provide a detailed respo
     "resources": ["<Array of helpful resources or articles>"]
   }
 }
-
 Ensure that the response is a valid JSON object. Provide a comprehensive analysis with detailed suggestions and multiple activities and resources. Do not include any additional text or formatting outside of the JSON structure.
-
 Journal Entry to analyze: `
 
 export async function POST(req) {
   try {
     const { userId, title, content } = await req.json()
-
-    // Analyze mood using Gemini API
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" })
-    const result = await model.generateContent(ANALYSIS_PROMPT + content)
-    const response = await result.response
-    let analysis
-
+    
+    // Use Gemini API to analyze the journal entry
     try {
-      const rawText = response.text()
-      const jsonContent = rawText.replace(/^```json\n|\n```$/g, "").trim()
-      analysis = JSON.parse(jsonContent)
-    } catch (parseError) {
-      console.error("Error parsing AI response:", parseError)
-      console.log("Raw AI response:", response.text())
-      return NextResponse.json({ error: "Invalid AI response format" }, { status: 500 })
-    }
-
-    // Validate the analysis structure
-    if (!analysis || typeof analysis.moodScore !== "number" || !analysis.summary) {
-      console.error("Invalid analysis structure:", analysis)
-      return NextResponse.json({ error: "Invalid analysis structure" }, { status: 500 })
-    }
-
-    // Save journal entry with detailed analysis
-    const [journal] = await db
-      .insert(JOURNAL_TABLE)
-      .values({
-        userId, //not able to fetch
-        title,
-        content,
-        moodScore: analysis.moodScore,
-        analysis,
+      // Updated to use the latest model version - gemini-1.5-pro
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" })
+      
+      // Generate content with safety settings
+      const result = await model.generateContent({
+        contents: [{ role: "user", parts: [{ text: ANALYSIS_PROMPT + content }] }],
+        generationConfig: {
+          temperature: 0.7,
+        },
       })
-      .returning()
-
-    return NextResponse.json({ journal })
+      
+      const response = result.response
+      const rawText = response.text()
+      
+      // Handle potential JSON formatting issues
+      let jsonContent = rawText
+      // If the response is wrapped in code blocks, remove them
+      if (rawText.includes("```json")) {
+        jsonContent = rawText.replace(/^```json\n|\n```$/g, "").trim()
+      }
+      
+      // Parse the JSON response
+      const analysis = JSON.parse(jsonContent)
+      
+      // Validate the analysis structure
+      if (!analysis || typeof analysis.moodScore !== "number" || !analysis.summary) {
+        console.error("Invalid analysis structure:", analysis)
+        return NextResponse.json({ error: "Invalid analysis structure" }, { status: 500 })
+      }
+      
+      // Save journal entry with detailed analysis
+      const [journal] = await db
+        .insert(JOURNAL_TABLE)
+        .values({
+          userId,
+          title,
+          content,
+          moodScore: analysis.moodScore,
+          analysis,
+        })
+        .returning()
+        
+      return NextResponse.json({ journal })
+    } catch (aiError) {
+      console.error("AI API Error:", aiError)
+      // Fallback analysis if AI service fails
+      const fallbackAnalysis = {
+        moodScore: 5,
+        summary: "Unable to analyze journal entry due to AI service error. This is a fallback summary.",
+        emotions: {
+          primary: "unknown",
+          secondary: ["unavailable"],
+          intensity: "Unable to determine"
+        },
+        topics: ["unavailable"],
+        suggestions: {
+          immediate: "Consider trying again later when the AI service is available.",
+          longTerm: "Continue journaling regularly.",
+          activities: ["Take a short walk", "Practice deep breathing"],
+          resources: ["Basic self-care guide"]
+        }
+      }
+      
+      // Save journal with fallback analysis
+      const [journal] = await db
+        .insert(JOURNAL_TABLE)
+        .values({
+          userId,
+          title,
+          content,
+          moodScore: fallbackAnalysis.moodScore,
+          analysis: fallbackAnalysis,
+        })
+        .returning()
+        
+      return NextResponse.json({ 
+        journal,
+        warning: "Used fallback analysis due to AI service error. Please try again later."
+      })
+    }
   } catch (error) {
     console.error("Error:", error)
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
   }
 }
 
-
 export async function GET(req) {
-  const session = await session({ req })
-
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-
-  const userId = session.user.id
-
   try {
+    // Import the auth session function
+    const { getServerSession } = await import("next-auth/next")
+    const { authOptions } = await import("../../../../configs/auth")
+    
+    // Get the session
+    const session = await getServerSession(authOptions)
+    
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    
+    const userId = session.user.id
+    
     const journals = await db
       .select()
       .from(JOURNAL_TABLE)
       .where(eq(JOURNAL_TABLE.userId, userId))
       .orderBy(JOURNAL_TABLE.createdAt.desc())
+      
     return NextResponse.json({ journals })
   } catch (error) {
     console.error("Error:", error)
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
   }
 }
-
