@@ -36,31 +36,51 @@ export async function POST(req) {
       // Updated to use the latest model version - gemini-1.5-pro
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" })
       
-      // Generate content with safety settings
-      const result = await model.generateContent({
+      // Generate content with safety settings and a timeout
+      const resultPromise = model.generateContent({
         contents: [{ role: "user", parts: [{ text: ANALYSIS_PROMPT + content }] }],
         generationConfig: {
           temperature: 0.7,
         },
       })
       
+      // Add a timeout to the API call
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('API timeout')), 15000)
+      );
+      
+      // Race between the API call and the timeout
+      const result = await Promise.race([resultPromise, timeoutPromise]);
+      
       const response = result.response
       const rawText = response.text()
       
       // Handle potential JSON formatting issues
-      let jsonContent = rawText
+      let jsonContent = rawText.trim()
+      
       // If the response is wrapped in code blocks, remove them
-      if (rawText.includes("```json")) {
-        jsonContent = rawText.replace(/^```json\n|\n```$/g, "").trim()
+      if (jsonContent.includes("```json")) {
+        jsonContent = jsonContent.replace(/```json\s*|\s*```/g, "").trim()
       }
       
-      // Parse the JSON response
-      const analysis = JSON.parse(jsonContent)
+      // Try to find and extract valid JSON if there's extra text
+      let jsonMatch = jsonContent.match(/\{[\s\S]*\}/)
+      if (jsonMatch) {
+        jsonContent = jsonMatch[0]
+      }
       
-      // Validate the analysis structure
-      if (!analysis || typeof analysis.moodScore !== "number" || !analysis.summary) {
-        console.error("Invalid analysis structure:", analysis)
-        return NextResponse.json({ error: "Invalid analysis structure" }, { status: 500 })
+      let analysis
+      try {
+        // Parse the JSON response
+        analysis = JSON.parse(jsonContent)
+        
+        // Validate the analysis structure
+        if (!analysis || typeof analysis.moodScore !== "number" || !analysis.summary) {
+          throw new Error("Invalid analysis structure")
+        }
+      } catch (jsonError) {
+        console.error("JSON parsing error:", jsonError, "Raw content:", jsonContent)
+        throw new Error("Failed to parse AI response")
       }
       
       // Save journal entry with detailed analysis
@@ -122,8 +142,8 @@ export async function POST(req) {
 export async function GET(req) {
   try {
     // Import the auth session function
-    // const { getServerSession } = await import("next-auth/next")
-    // const { authOptions } = await import("../../../../configs/auth")
+    const { getServerSession } = await import("next-auth/next")
+    const { authOptions } = await import("../../../../configs/auth")
     
     // Get the session
     const session = await getServerSession(authOptions)
