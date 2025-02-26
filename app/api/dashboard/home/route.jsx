@@ -122,8 +122,8 @@ export async function POST(req) {
 export async function GET(req) {
   try {
     // Import the auth session function
-    const { getServerSession } = await import("next-auth/next")
-    const { authOptions } = await import("../../../../configs/auth")
+    // const { getServerSession } = await import("next-auth/next")
+    // const { authOptions } = await import("../../../../configs/auth")
     
     // Get the session
     const session = await getServerSession(authOptions)
