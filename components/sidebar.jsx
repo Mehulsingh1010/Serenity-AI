@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { UserButton, useUser, useClerk } from "@clerk/nextjs"
-import { Home, Book, Smile, History, Settings, Menu, X, HeartPulse } from "lucide-react"
+import { Home, Book, Smile, History, Settings,HeartHandshake ,  Menu, X, HeartPulse } from "lucide-react"
 import { Button } from "../components/ui/button"
 import { useRouter } from "next/navigation"
 import { ScrollArea } from "../components/ui/scroll-area"
@@ -19,6 +19,7 @@ const sidebarItems = [
   { title: "Home", icon: Home, href: "/dashboard/home" },
   { title: "Journal-History", icon: Book, href: "/dashboard/journal" },
   { title: "Mood Tracker", icon: Smile, href: "/dashboard/mood-tracker" },
+  { title: "Meditation Center", icon: HeartHandshake, href: "/dashboard/meditation-center" },
   { title: "Settings", icon: Settings, href: "/dashboard/settings" },
 ]
 
