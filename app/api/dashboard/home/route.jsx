@@ -5,7 +5,7 @@ import { JOURNAL_TABLE } from "../../../../configs/schema"
 const ANALYSIS_PROMPT = `You are an expert journal analyst. Your job is to analyze a journal entry and return a JSON object with the following keys:
 
 - moodScore: A number between 1 and 10 that represents the mood of the writer. 1 is very negative, 5 is neutral, and 10 is very positive.
-- summary: A detailed and precise summary of the journal entry.
+- summary: A detailed and precise summary of the journal entry, write at least 10 lines.
 - emotions: An object with two keys:
   - primary: The primary emotion of the writer.
   - secondary: An array of secondary emotions of the writer.
