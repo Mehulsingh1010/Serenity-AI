@@ -22,8 +22,25 @@ export default function JournalChatbot({
     const [messages, setMessages] = useState([]);
     const [isTyping, setIsTyping] = useState(false);
     const [blinking, setBlinking] = useState(true);
+    const [isMobileView, setIsMobileView] = useState(false);
     const messagesEndRef = useRef(null);
     const inputRef = useRef(null);
+
+    // Check if the viewport is mobile
+    useEffect(() => {
+        const checkIfMobile = () => {
+            setIsMobileView(window.innerWidth < 768); // 768px is a common breakpoint for mobile
+        };
+        
+        // Initial check
+        checkIfMobile();
+        
+        // Listen for window resize
+        window.addEventListener('resize', checkIfMobile);
+        
+        // Cleanup
+        return () => window.removeEventListener('resize', checkIfMobile);
+    }, []);
 
     useEffect(() => {
         if (journalId) {
@@ -71,7 +88,8 @@ export default function JournalChatbot({
     }, [analysis, isOpen]);
 
     useEffect(() => {
-        if (analysis && isVisible) {
+        // Only auto-open on desktop if the chatbot is meant to be visible
+        if (analysis && isVisible && !isMobileView) {
             const timer = setTimeout(() => {
                 setIsOpen(true);
                 setBlinking(false);
@@ -79,7 +97,7 @@ export default function JournalChatbot({
 
             return () => clearTimeout(timer);
         }
-    }, [analysis, isVisible]);
+    }, [analysis, isVisible, isMobileView]);
 
     useEffect(() => {
         if (isOpen && !isMinimized) {
@@ -337,7 +355,7 @@ export default function JournalChatbot({
                 onClick={toggleChat}
                 className={cn(
                     "rounded-full h-14 w-14 shadow-lg transition-all duration-300",
-                    blinking ? "animate-pulse" : "",
+                    blinking && !isMobileView ? "animate-pulse" : "",
                     isOpen
                         ? "bg-pink-500 hover:bg-pink-600"
                         : "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
