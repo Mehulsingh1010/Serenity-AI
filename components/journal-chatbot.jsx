@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare, X, Send, Sparkles, Maximize2, Minimize2 } from "lucide-react";
+import { MessageSquare, X, Send, Sparkles, Maximize2, Minimize2, HeartPulse } from "lucide-react";
 import { Button } from "./ui/button";
 
 import { Card, CardContent, CardFooter, CardHeader }    from "./ui/card";
@@ -188,7 +188,7 @@ export default function JournalChatbot({
                             y: 0,
                             scale: 1,
                             height: isMinimized ? "auto" : "500px",
-                            width: isMinimized ? "auto" : ["100%", "350px"],
+                            width: isMinimized ? "auto" : "350px", // Fixed width value
                         }}
                         exit={{ opacity: 0, y: 20, scale: 0.9 }}
                         transition={{ duration: 0.2 }}
@@ -201,8 +201,8 @@ export default function JournalChatbot({
                             {!isMinimized && (
                                 <CardHeader className="p-3 border-b bg-gradient-to-r from-purple-500 to-pink-500 flex flex-row items-center justify-between">
                                     <div className="flex items-center space-x-2">
-                                        <Avatar className="h-8 w-8 bg-white">
-                                            <Sparkles className="h-4 w-4 text-purple-500" />
+                                        <Avatar className="h-8 w-8 items-center justify-center bg-white">
+                                            <HeartPulse />
                                         </Avatar>
                                         <div className="font-medium text-white">Journal Assistant</div>
                                     </div>
@@ -230,8 +230,8 @@ export default function JournalChatbot({
                             {isMinimized ? (
                                 <CardHeader className="p-2 flex flex-row items-center justify-between bg-gradient-to-r from-purple-500 to-pink-500">
                                     <div className="flex items-center space-x-2">
-                                        <Avatar className="h-7 w-7 bg-white">
-                                            <Sparkles className="h-3 w-3 text-purple-500" />
+                                        <Avatar className="h-7 w-7 items-center justify-center bg-white">
+                                            <HeartPulse />
                                         </Avatar>
                                         <div className="font-medium text-white text-sm">Journal Assistant</div>
                                     </div>
@@ -346,7 +346,7 @@ export default function JournalChatbot({
                 {isOpen ? (
                     <X className="h-6 w-6 text-white" />
                 ) : (
-                    <MessageSquare className="h-6 w-6 text-white" />
+                    <HeartPulse className="h-12 w-12 text-white" />
                 )}
             </Button>
         </div>
