@@ -14,7 +14,7 @@ import {
   SidebarNav,
   SidebarNavItem,
 } from "../components/ui/sidebar"
-
+import Link from "next/link"
 const sidebarItems = [
   { title: "Home", icon: Home, href: "/dashboard/home" },
   { title: "Journal-History", icon: Book, href: "/dashboard/journal" },
@@ -40,10 +40,12 @@ export function ModernSidebar() {
     <>
       {/* Mobile Header */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b p-4 flex justify-between items-center">
+      <Link href="/"> 
         <div className="flex items-center space-x-3">
           <HeartPulse className="w-6 h-6" />
           <h1 className="text-lg font-bold">SerenityAI +</h1>
         </div>
+        </Link>
         <div className="flex items-center space-x-4">
           <UserButton
             appearance={{
@@ -65,10 +67,12 @@ export function ModernSidebar() {
           ${isMobileOpen ? "translate-x-0" : "-translate-x-full"} 
           md:translate-x-0 w-72 max-w-[90vw] bg-background/95 backdrop-blur-md border-r flex flex-col`}
       >
+        <Link href="/">
         <SidebarHeader className="p-4 flex items-center space-x-3 border-b h-16 flex-shrink-0">
           <HeartPulse className="w-6 h-6" />
           <h1 className="text-lg font-bold">SerenityAI +</h1>
         </SidebarHeader>
+        </Link>
 
         <SidebarContent className="flex-grow overflow-hidden">
           <ScrollArea className="h-full">

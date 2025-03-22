@@ -99,7 +99,7 @@ export default function LandingPage() {
                 transition={{ duration: 0.3 }}
               />
             </Button>
-            
+            <Link href="/dashboard/home">
             <Button
               size="lg"
               variant="outline"
@@ -109,6 +109,7 @@ export default function LandingPage() {
                 Go to Dashboard
               </span>
             </Button>
+            </Link>
           </motion.div>
         </motion.div>
       </div>
@@ -187,9 +188,11 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-purple-900 mb-8">Experience Serenity AI</h2>
           <p className="text-xl text-gray-600 mb-12">Take a guided tour of our features and see how Serenity AI can transform your emotional well-being.</p>
+            <Link href="/dashboard/home">
           <Button size="lg" variant="outline" className="border-purple-600 text-purple-600 hover:bg-purple-50">
             Start Interactive Demo
           </Button>
+          </Link>
         </div>
       </section>
       {/* Footer */}
