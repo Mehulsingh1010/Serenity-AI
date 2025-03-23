@@ -161,7 +161,7 @@ export default function MoodTrackerPage() {
           <p className="text-purple-600 mb-6">
             Start tracking your mood by writing journal entries. Your emotional journey begins with a single thought.
           </p>
-          <Link href="/dashboard/journal/new">
+          <Link href="/dashboard/home">
             <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105">
               Create Your First Entry
             </Button>
