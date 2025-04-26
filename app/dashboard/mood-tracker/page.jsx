@@ -11,7 +11,7 @@ export default function MoodTrackerPage() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [view, setView] = useState('weekly') // 'weekly', 'monthly', 'yearly'
+  const [view, setView] = useState('weekly') 
 
   const fetchMoodData = async () => {
     setLoading(true)

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { db } from "../../../../configs/db"
 import { JOURNAL_TABLE } from "../../../../configs/schema"
+import { sql } from "drizzle-orm"
 
 const ANALYSIS_PROMPT = `You are an expert journal analyst. Your job is to analyze a journal entry and return a JSON object with the following keys:
 
@@ -23,6 +24,8 @@ Here is the journal entry:
 export async function POST(req) {
   try {
     const { userId, title, content } = await req.json()
+
+    // No auth check - we trust the frontend to send the correct userId
 
     // Use Gemini API to analyze the journal entry
     try {
@@ -151,4 +154,3 @@ export async function POST(req) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
   }
 }
-

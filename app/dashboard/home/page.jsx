@@ -3,31 +3,11 @@
 import { useState } from "react"
 import { useUser } from "@clerk/nextjs"
 import { Button } from "../../../components/ui/button"
+import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../../components/ui/card"
 import { Input } from "../../../components/ui/input"
-import {
-  ThumbsUp,
-  ThumbsDown,
-  Heart,
-  BookOpen,
-  Lightbulb,
-  Info,
-  Bold,
-  Italic,
-  List,
-  CheckSquare,
-  Highlighter,
-  Heading1,
-  Heading2,
-  Quote,
-  Code,
-  Undo,
-  Redo,
-  Link,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-} from "lucide-react"
+
+import { ThumbsUp, ThumbsDown, BookOpen, Info, Bold, Italic, Highlighter, Sparkles } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../../components/ui/tooltip"
 import { useEditor, EditorContent, BubbleMenu } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
@@ -44,7 +24,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui
 import { LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts"
 import { cn } from "../../../lib/utils"
 import JournalChatbot from "../../../components/journal-chatbot"
-
+import { useSubscription } from "../../../hooks/use-subscription"
 const MenuBar = ({ editor }) => {
   if (!editor) return null
 
@@ -75,87 +55,6 @@ const MenuBar = ({ editor }) => {
         >
           <Italic size={16} />
         </Button>
-        <span className="w-px h-6 bg-purple-200 mx-1"></span>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          className={cn(
-            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
-            editor.isActive("heading", { level: 1 }) ? "bg-purple-300 text-purple-800" : "text-purple-700",
-          )}
-          title="Heading 1"
-        >
-          <Heading1 size={16} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          className={cn(
-            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
-            editor.isActive("heading", { level: 2 }) ? "bg-purple-300 text-purple-800" : "text-purple-700",
-          )}
-          title="Heading 2"
-        >
-          <Heading2 size={16} />
-        </Button>
-        <span className="w-px h-6 bg-purple-200 mx-1"></span>
-      </div>
-
-      <div className="flex items-center gap-1 mr-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={cn(
-            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
-            editor.isActive("bulletList") ? "bg-purple-300 text-purple-800" : "text-purple-700",
-          )}
-          title="Bullet List"
-        >
-          <List size={16} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => editor.chain().focus().toggleTaskList().run()}
-          className={cn(
-            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
-            editor.isActive("taskList") ? "bg-purple-300 text-purple-800" : "text-purple-700",
-          )}
-          title="Task List"
-        >
-          <CheckSquare size={16} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className={cn(
-            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
-            editor.isActive("blockquote") ? "bg-purple-300 text-purple-800" : "text-purple-700",
-          )}
-          title="Quote"
-        >
-          <Quote size={16} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-          className={cn(
-            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
-            editor.isActive("codeBlock") ? "bg-purple-300 text-purple-800" : "text-purple-700",
-          )}
-          title="Code Block"
-        >
-          <Code size={16} />
-        </Button>
-        <span className="w-px h-6 bg-purple-200 mx-1"></span>
-      </div>
-
-      <div className="flex items-center gap-1 mr-2">
         <Button
           variant="ghost"
           size="icon"
@@ -167,87 +66,6 @@ const MenuBar = ({ editor }) => {
           title="Highlight"
         >
           <Highlighter size={16} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => {
-            const url = window.prompt("Enter the URL")
-            if (url) {
-              editor.chain().focus().setLink({ href: url }).run()
-            }
-          }}
-          className={cn(
-            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
-            editor.isActive("link") ? "bg-purple-300 text-purple-800" : "text-purple-700",
-          )}
-          title="Insert Link"
-        >
-          <Link size={16} />
-        </Button>
-        <span className="w-px h-6 bg-purple-200 mx-1"></span>
-      </div>
-
-      <div className="flex items-center gap-1 mr-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => editor.chain().focus().setTextAlign("left").run()}
-          className={cn(
-            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
-            editor.isActive({ textAlign: "left" }) ? "bg-purple-300 text-purple-800" : "text-purple-700",
-          )}
-          title="Align Left"
-        >
-          <AlignLeft size={16} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => editor.chain().focus().setTextAlign("center").run()}
-          className={cn(
-            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
-            editor.isActive({ textAlign: "center" }) ? "bg-purple-300 text-purple-800" : "text-purple-700",
-          )}
-          title="Align Center"
-        >
-          <AlignCenter size={16} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => editor.chain().focus().setTextAlign("right").run()}
-          className={cn(
-            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
-            editor.isActive({ textAlign: "right" }) ? "bg-purple-300 text-purple-800" : "text-purple-700",
-          )}
-          title="Align Right"
-        >
-          <AlignRight size={16} />
-        </Button>
-        <span className="w-px h-6 bg-purple-200 mx-1"></span>
-      </div>
-
-      <div className="flex items-center gap-1">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => editor.chain().focus().undo().run()}
-          disabled={!editor.can().undo()}
-          className="w-8 h-8 rounded-md hover:bg-purple-200 transition-colors text-purple-700 disabled:opacity-50"
-          title="Undo"
-        >
-          <Undo size={16} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => editor.chain().focus().redo().run()}
-          disabled={!editor.can().redo()}
-          className="w-8 h-8 rounded-md hover:bg-purple-200 transition-colors text-purple-700 disabled:opacity-50"
-          title="Redo"
-        >
-          <Redo size={16} />
         </Button>
       </div>
     </div>
@@ -263,7 +81,10 @@ export default function MoodJournal() {
   const [wordCount, setWordCount] = useState(0)
   const [infoOpen, setInfoOpen] = useState(false)
   const [showChatbot, setShowChatbot] = useState(false)
-  const user = useUser()
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false)
+  const { user } = useUser()
+  const { status, loading } = useSubscription()
+  const router = useRouter()
 
   const editor = useEditor({
     extensions: [
@@ -295,18 +116,28 @@ export default function MoodJournal() {
 
   const handleSubmit = async () => {
     if (!title || !editor?.getHTML()) return
+    if (!user) return
+
+    // Check if user has reached free entry limit and is not subscribed
+    if (status.entriesRemaining <= 0 && !status.isSubscribed) {
+      setShowSubscriptionModal(true)
+      return
+    }
 
     setSubmitting(true)
     try {
       const response = await fetch("/api/dashboard/home", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.user.id, title, content: editor.getHTML() }),
+        body: JSON.stringify({ userId: user.id, title, content: editor.getHTML() }),
       })
-      const data = await response.json()
-      if (data.error) {
-        throw new Error(data.error)
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to submit journal entry")
       }
+
+      const data = await response.json()
 
       setCurrentAnalysis(data.journal)
       setShowChatbot(true) // Show chatbot after analysis is complete
@@ -315,6 +146,10 @@ export default function MoodJournal() {
         description: "Journal entry submitted successfully!",
         className: "bg-gradient-to-r from-purple-500 to-pink-500 text-white",
       })
+
+      // Reset form
+      setTitle("")
+      editor?.commands.clearContent()
     } catch (error) {
       console.error("Error submitting journal:", error)
       toast({
@@ -350,34 +185,17 @@ export default function MoodJournal() {
         return (
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <Heart className="text-red-500" />
+              <ThumbsUp className="text-green-500" />
               <h3 className="text-lg font-semibold">Emotional Analysis</h3>
             </div>
-            <div className="space-y-2">
-              <p className="font-medium">Primary Emotion: {analysis.emotions.primary}</p>
-              <p className="text-sm text-gray-600">Intensity: {analysis.emotions.intensity}</p>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {analysis.emotions.secondary.map((emotion, index) => (
-                  <span key={index} className="px-2 py-1 bg-gray-100 rounded-full text-sm">
-                    {emotion}
-                  </span>
-                ))}
-              </div>
+            <p className="text-gray-600">Primary emotion: {analysis.emotions?.primary || "Not available"}</p>
+            <div className="flex flex-wrap gap-2">
+              {analysis.emotions?.secondary?.map((emotion, index) => (
+                <span key={index} className="px-2 py-1 bg-gray-100 rounded-full text-sm">
+                  {emotion}
+                </span>
+              ))}
             </div>
-            <ResponsiveContainer width="100%" height={200}>
-              <LineChart
-                data={[
-                  { time: "Morning", intensity: 5 },
-                  { time: "Afternoon", intensity: 3 },
-                  { time: "Evening", intensity: 7 },
-                ]}
-              >
-                <XAxis dataKey="time" />
-                <YAxis />
-                <RechartsTooltip />
-                <Line type="monotone" dataKey="intensity" stroke="#8b5cf6" />
-              </LineChart>
-            </ResponsiveContainer>
           </div>
         )
 
@@ -389,7 +207,7 @@ export default function MoodJournal() {
               <h3 className="text-lg font-semibold">Key Topics</h3>
             </div>
             <div className="flex flex-wrap gap-2">
-              {analysis.topics.map((topic, index) => (
+              {analysis.topics?.map((topic, index) => (
                 <span key={index} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full">
                   {topic}
                 </span>
@@ -402,35 +220,11 @@ export default function MoodJournal() {
         return (
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <Lightbulb className="text-yellow-500" />
+              <ThumbsUp className="text-green-500" />
               <h3 className="text-lg font-semibold">Suggestions</h3>
             </div>
-            <div className="space-y-3">
-              <div>
-                <h4 className="font-medium">Immediate Action:</h4>
-                <p className="text-gray-600">{analysis.suggestions.immediate}</p>
-              </div>
-              <div>
-                <h4 className="font-medium">Long-term Recommendation:</h4>
-                <p className="text-gray-600">{analysis.suggestions.longTerm}</p>
-              </div>
-              <div>
-                <h4 className="font-medium">Recommended Activities:</h4>
-                <ul className="list-disc list-inside text-gray-600">
-                  {analysis.suggestions.activities.map((activity, index) => (
-                    <li key={index}>{activity}</li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-medium">Helpful Resources:</h4>
-                <ul className="list-disc list-inside text-gray-600">
-                  {analysis.suggestions.resources.map((resource, index) => (
-                    <li key={index}>{resource}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+            <p className="text-gray-600">{analysis.suggestions?.immediate || "No immediate suggestions available."}</p>
+            <p className="text-gray-600">{analysis.suggestions?.longTerm || "No long-term suggestions available."}</p>
           </div>
         )
     }
@@ -438,6 +232,16 @@ export default function MoodJournal() {
 
   return (
     <div className="container mx-auto p-4 font-sans">
+      {/* Subscription Banner */}
+      {!loading && !status.isSubscribed && status.entriesRemaining <= 2 && status.entriesRemaining > 0 && (
+        <SubscriptionPrompt status={status} variant="banner" />
+      )}
+
+      {/* Subscription Modal */}
+      {showSubscriptionModal && (
+        <SubscriptionPrompt status={status} variant="modal" onClose={() => setShowSubscriptionModal(false)} />
+      )}
+
       <div className="flex justify-between items-center mb-6">
         <motion.h1
           className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600"
@@ -480,9 +284,22 @@ export default function MoodJournal() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
+          {/* Subscription Prompt (inline) */}
+          {!loading && !status.isSubscribed && status.entriesRemaining <= 1 && (
+            <SubscriptionPrompt status={status} variant="inline" />
+          )}
+
           <Card className="bg-gradient-to-br from-purple-50 to-pink-50 shadow-lg border-purple-100">
             <CardHeader className="pb-3">
-              <CardTitle className="text-2xl text-purple-700">New Entry</CardTitle>
+              <CardTitle className="text-2xl text-purple-700">
+                New Entry
+                {!loading && !status.isSubscribed && status.entriesRemaining > 1 && (
+                  <span className="ml-2 text-sm font-normal text-purple-500 flex items-center">
+                    <Sparkles className="h-4 w-4 mr-1" />
+                    {status.entriesRemaining} entries remaining
+                  </span>
+                )}
+              </CardTitle>
               <CardDescription>Capture your thoughts and feelings</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -558,7 +375,7 @@ export default function MoodJournal() {
             <CardFooter>
               <Button
                 onClick={handleSubmit}
-                disabled={submitting || !title || !editor?.getHTML() || editor?.getHTML() === "<p></p>"}
+                disabled={submitting || !title || !editor?.getHTML() || editor?.getHTML() === "<p></p>" || !user}
                 className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-all duration-300 h-12 rounded-lg"
               >
                 {submitting ? (
@@ -684,4 +501,3 @@ export default function MoodJournal() {
     </div>
   )
 }
-

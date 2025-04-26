@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react"
 import { UserButton, useUser, useClerk } from "@clerk/nextjs"
-import { Home, Book, Smile, History, Settings,HeartHandshake ,  Menu, X, HeartPulse } from "lucide-react"
-import { Button } from "../components/ui/button"
+import { Home, Book, Smile, History, Settings, HeartHandshake, Menu, X, HeartPulse, Sparkles, Crown } from 'lucide-react'
+import { Button } from "./ui/button"
 import { useRouter } from "next/navigation"
-import { ScrollArea } from "../components/ui/scroll-area"
+import { ScrollArea } from "./ui/scroll-area"
 import {
   Sidebar,
   SidebarContent,
@@ -13,8 +13,11 @@ import {
   SidebarHeader,
   SidebarNav,
   SidebarNavItem,
-} from "../components/ui/sidebar"
+} from "./ui/sidebar"
 import Link from "next/link"
+import { useSubscription } from "../hooks/use-subscription"
+import { Badge } from "./ui/badge"
+
 const sidebarItems = [
   { title: "Home", icon: Home, href: "/dashboard/home" },
   { title: "Journal-History", icon: Book, href: "/dashboard/journal" },
@@ -28,6 +31,7 @@ export function ModernSidebar() {
   const { user } = useUser()
   const { signOut } = useClerk()
   const router = useRouter()
+  const { status } = useSubscription()
 
   const toggleMobileSidebar = () => setIsMobileOpen(!isMobileOpen)
 
@@ -41,11 +45,11 @@ export function ModernSidebar() {
     <>
       {/* Mobile Header */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b p-4 flex justify-between items-center">
-      <Link href="/"> 
-        <div className="flex items-center space-x-3">
-          <HeartPulse className="w-6 h-6" />
-          <h1 className="text-lg font-bold">SerenityAI +</h1>
-        </div>
+        <Link href="/"> 
+          <div className="flex items-center space-x-3">
+            <HeartPulse className="w-6 h-6" />
+            <h1 className="text-lg font-bold">SerenityAI +</h1>
+          </div>
         </Link>
         <div className="flex items-center space-x-4">
           <UserButton
@@ -69,15 +73,16 @@ export function ModernSidebar() {
           md:translate-x-0 w-72 max-w-[90vw] bg-background/95 backdrop-blur-md border-r flex flex-col`}
       >
         <Link href="/">
-        <SidebarHeader className="p-4 flex items-center space-x-3 border-b h-16 flex-shrink-0">
-          <HeartPulse className="w-6 h-6" />
-          <h1 className="text-lg font-bold">SerenityAI +</h1>
-        </SidebarHeader>
+          <SidebarHeader className="p-4 flex items-center space-x-3 border-b h-16 flex-shrink-0">
+            <HeartPulse className="w-6 h-6" />
+            <h1 className="text-lg font-bold">SerenityAI +</h1>
+          </SidebarHeader>
         </Link>
 
         <SidebarContent className="flex-grow overflow-hidden">
           <ScrollArea className="h-full">
             <div className="px-2 py-4">
+              {/* Navigation Items First */}
               <SidebarNav>
                 {sidebarItems.map((item) => (
                   <SidebarNavItem
@@ -90,6 +95,59 @@ export function ModernSidebar() {
                   </SidebarNavItem>
                 ))}
               </SidebarNav>
+              
+              {/* Subscription Section Below Navigation */}
+              <div className="mt-6 px-3">
+                {/* Subscription Nav Item */}
+                <SidebarNavItem
+                  href="/dashboard/subscription"
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg mb-4"
+                >
+                  <Sparkles className="h-5 w-5 text-purple-500" />
+                  <span className="text-base font-medium">Subscription</span>
+                  {!status.isSubscribed && (
+                    <Badge variant="outline" className="ml-auto bg-purple-100 text-purple-800 border-purple-200">
+                      Upgrade
+                    </Badge>
+                  )}
+                </SidebarNavItem>
+                
+                {/* Subscription Status Card */}
+                {!status.isSubscribed && (
+                  <div className="mb-4 p-3 bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Sparkles className="h-4 w-4 text-purple-500" />
+                      <span className="text-sm font-medium">Free Plan</span>
+                    </div>
+                    <p className="text-xs text-gray-600 mb-2">
+                      {status.entriesRemaining > 0 
+                        ? `${status.entriesRemaining} entries remaining` 
+                        : "You've reached your free entry limit"}
+                    </p>
+                    <Button 
+                      size="sm" 
+                      className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                      onClick={() => router.push("/dashboard/subscription")}
+                    >
+                      Upgrade
+                    </Button>
+                  </div>
+                )}
+                
+                {status.isSubscribed && (
+                  <div className="mb-4 p-3 bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <Crown className="h-4 w-4 text-yellow-500" />
+                      <span className="text-sm font-medium">
+                        {status.plan === "premium" ? "Premium" : "Annual"} Plan
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-600 mt-1">
+                      Unlimited entries & features
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </ScrollArea>
         </SidebarContent>
@@ -118,4 +176,4 @@ export function ModernSidebar() {
       </Sidebar>
     </>
   )
-}
+} 
