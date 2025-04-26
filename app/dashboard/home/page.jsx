@@ -1,32 +1,81 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useUser } from "@clerk/nextjs"
-import { Button } from "../../../components/ui/button"
-import { useRouter } from "next/navigation"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../../components/ui/card"
-import { Input } from "../../../components/ui/input"
+import { useState } from "react";
+import { useUser } from "@clerk/nextjs";
+import { Button } from "../../../components/ui/button";
+import { useToast } from "../../../hooks/use-toast";
+import { useSubscription } from "../../../hooks/use-subscription";
+import SubscriptionPrompt from "../../../components/subscription-prompt";
 
-import { ThumbsUp, ThumbsDown, BookOpen, Info, Bold, Italic, Highlighter, Sparkles } from "lucide-react"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../../components/ui/tooltip"
-import { useEditor, EditorContent, BubbleMenu } from "@tiptap/react"
-import StarterKit from "@tiptap/starter-kit"
-import Highlight from "@tiptap/extension-highlight"
-import TaskList from "@tiptap/extension-task-list"
-import TaskItem from "@tiptap/extension-task-item"
-import Placeholder from "@tiptap/extension-placeholder"
-import TiptapImage from "@tiptap/extension-image"
-import TiptapLink from "@tiptap/extension-link"
-import TextAlign from "@tiptap/extension-text-align"
-import { motion } from "framer-motion"
-import { toast } from "../../../hooks/use-toast"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs"
-import { LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts"
-import { cn } from "../../../lib/utils"
-import JournalChatbot from "../../../components/journal-chatbot"
-import { useSubscription } from "../../../hooks/use-subscription"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../../../components/ui/card";
+import { Input } from "../../../components/ui/input";
+import {
+  ThumbsUp,
+  ThumbsDown,
+  Heart,
+  Sparkles,
+  BookOpen,
+  Lightbulb,
+  Info,
+  Bold,
+  Italic,
+  List,
+  CheckSquare,
+  Highlighter,
+  Heading1,
+  Heading2,
+  Quote,
+  Code,
+  Undo,
+  Redo,
+  Link,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+} from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../../../components/ui/tooltip";
+import { useEditor, EditorContent, BubbleMenu } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Highlight from "@tiptap/extension-highlight";
+import TaskList from "@tiptap/extension-task-list";
+import TaskItem from "@tiptap/extension-task-item";
+import Placeholder from "@tiptap/extension-placeholder";
+import TiptapImage from "@tiptap/extension-image";
+import TiptapLink from "@tiptap/extension-link";
+import TextAlign from "@tiptap/extension-text-align";
+import { motion } from "framer-motion";
+import { toast } from "../../../hooks/use-toast";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../../components/ui/tabs";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer,
+} from "recharts";
+import { cn } from "../../../lib/utils";
+import JournalChatbot from "../../../components/journal-chatbot";
+
 const MenuBar = ({ editor }) => {
-  if (!editor) return null
+  if (!editor) return null;
 
   return (
     <div className="flex flex-wrap items-center gap-1 p-2 border-b bg-gradient-to-r from-purple-100 to-pink-100 rounded-t-lg">
@@ -37,7 +86,9 @@ const MenuBar = ({ editor }) => {
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={cn(
             "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
-            editor.isActive("bold") ? "bg-purple-300 text-purple-800" : "text-purple-700",
+            editor.isActive("bold")
+              ? "bg-purple-300 text-purple-800"
+              : "text-purple-700"
           )}
           title="Bold"
         >
@@ -49,42 +100,232 @@ const MenuBar = ({ editor }) => {
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={cn(
             "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
-            editor.isActive("italic") ? "bg-purple-300 text-purple-800" : "text-purple-700",
+            editor.isActive("italic")
+              ? "bg-purple-300 text-purple-800"
+              : "text-purple-700"
           )}
           title="Italic"
         >
           <Italic size={16} />
         </Button>
+        <span className="w-px h-6 bg-purple-200 mx-1"></span>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 1 }).run()
+          }
+          className={cn(
+            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
+            editor.isActive("heading", { level: 1 })
+              ? "bg-purple-300 text-purple-800"
+              : "text-purple-700"
+          )}
+          title="Heading 1"
+        >
+          <Heading1 size={16} />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 2 }).run()
+          }
+          className={cn(
+            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
+            editor.isActive("heading", { level: 2 })
+              ? "bg-purple-300 text-purple-800"
+              : "text-purple-700"
+          )}
+          title="Heading 2"
+        >
+          <Heading2 size={16} />
+        </Button>
+        <span className="w-px h-6 bg-purple-200 mx-1"></span>
+      </div>
+
+      <div className="flex items-center gap-1 mr-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+          className={cn(
+            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
+            editor.isActive("bulletList")
+              ? "bg-purple-300 text-purple-800"
+              : "text-purple-700"
+          )}
+          title="Bullet List"
+        >
+          <List size={16} />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => editor.chain().focus().toggleTaskList().run()}
+          className={cn(
+            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
+            editor.isActive("taskList")
+              ? "bg-purple-300 text-purple-800"
+              : "text-purple-700"
+          )}
+          title="Task List"
+        >
+          <CheckSquare size={16} />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+          className={cn(
+            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
+            editor.isActive("blockquote")
+              ? "bg-purple-300 text-purple-800"
+              : "text-purple-700"
+          )}
+          title="Quote"
+        >
+          <Quote size={16} />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+          className={cn(
+            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
+            editor.isActive("codeBlock")
+              ? "bg-purple-300 text-purple-800"
+              : "text-purple-700"
+          )}
+          title="Code Block"
+        >
+          <Code size={16} />
+        </Button>
+        <span className="w-px h-6 bg-purple-200 mx-1"></span>
+      </div>
+
+      <div className="flex items-center gap-1 mr-2">
         <Button
           variant="ghost"
           size="icon"
           onClick={() => editor.chain().focus().toggleHighlight().run()}
           className={cn(
             "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
-            editor.isActive("highlight") ? "bg-purple-300 text-purple-800" : "text-purple-700",
+            editor.isActive("highlight")
+              ? "bg-purple-300 text-purple-800"
+              : "text-purple-700"
           )}
           title="Highlight"
         >
           <Highlighter size={16} />
         </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => {
+            const url = window.prompt("Enter the URL");
+            if (url) {
+              editor.chain().focus().setLink({ href: url }).run();
+            }
+          }}
+          className={cn(
+            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
+            editor.isActive("link")
+              ? "bg-purple-300 text-purple-800"
+              : "text-purple-700"
+          )}
+          title="Insert Link"
+        >
+          <Link size={16} />
+        </Button>
+        <span className="w-px h-6 bg-purple-200 mx-1"></span>
+      </div>
+
+      <div className="flex items-center gap-1 mr-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => editor.chain().focus().setTextAlign("left").run()}
+          className={cn(
+            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
+            editor.isActive({ textAlign: "left" })
+              ? "bg-purple-300 text-purple-800"
+              : "text-purple-700"
+          )}
+          title="Align Left"
+        >
+          <AlignLeft size={16} />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => editor.chain().focus().setTextAlign("center").run()}
+          className={cn(
+            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
+            editor.isActive({ textAlign: "center" })
+              ? "bg-purple-300 text-purple-800"
+              : "text-purple-700"
+          )}
+          title="Align Center"
+        >
+          <AlignCenter size={16} />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => editor.chain().focus().setTextAlign("right").run()}
+          className={cn(
+            "w-8 h-8 rounded-md hover:bg-purple-200 transition-colors",
+            editor.isActive({ textAlign: "right" })
+              ? "bg-purple-300 text-purple-800"
+              : "text-purple-700"
+          )}
+          title="Align Right"
+        >
+          <AlignRight size={16} />
+        </Button>
+        <span className="w-px h-6 bg-purple-200 mx-1"></span>
+      </div>
+
+      <div className="flex items-center gap-1">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => editor.chain().focus().undo().run()}
+          disabled={!editor.can().undo()}
+          className="w-8 h-8 rounded-md hover:bg-purple-200 transition-colors text-purple-700 disabled:opacity-50"
+          title="Undo"
+        >
+          <Undo size={16} />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => editor.chain().focus().redo().run()}
+          disabled={!editor.can().redo()}
+          className="w-8 h-8 rounded-md hover:bg-purple-200 transition-colors text-purple-700 disabled:opacity-50"
+          title="Redo"
+        >
+          <Redo size={16} />
+        </Button>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default function MoodJournal() {
-  const [title, setTitle] = useState("")
-  const [submitting, setSubmitting] = useState(false)
-  const [currentAnalysis, setCurrentAnalysis] = useState(null)
-  const [currentAnalysisTab, setCurrentAnalysisTab] = useState("summary")
-  const [charCount, setCharCount] = useState(0)
-  const [wordCount, setWordCount] = useState(0)
-  const [infoOpen, setInfoOpen] = useState(false)
-  const [showChatbot, setShowChatbot] = useState(false)
-  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false)
-  const { user } = useUser()
-  const { status, loading } = useSubscription()
-  const router = useRouter()
+  const [title, setTitle] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [currentAnalysis, setCurrentAnalysis] = useState(null);
+  const [currentAnalysisTab, setCurrentAnalysisTab] = useState("summary");
+  const [charCount, setCharCount] = useState(0);
+  const [wordCount, setWordCount] = useState(0);
+  const [infoOpen, setInfoOpen] = useState(false);
+  const [showChatbot, setShowChatbot] = useState(false);
+    const { status, loading } = useSubscription()
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const { toast } = useToast();
+  const user = useUser();
 
   const editor = useEditor({
     extensions: [
@@ -108,62 +349,52 @@ export default function MoodJournal() {
     content: "",
     onUpdate: ({ editor }) => {
       // Count words and characters
-      const text = editor.getText()
-      setCharCount(text.length)
-      setWordCount(text.split(/\s+/).filter((word) => word.length > 0).length)
+      const text = editor.getText();
+      setCharCount(text.length);
+      setWordCount(text.split(/\s+/).filter((word) => word.length > 0).length);
     },
-  })
+  });
 
   const handleSubmit = async () => {
-    if (!title || !editor?.getHTML()) return
-    if (!user) return
+    if (!title || !editor?.getHTML()) return;
 
-    // Check if user has reached free entry limit and is not subscribed
-    if (status.entriesRemaining <= 0 && !status.isSubscribed) {
-      setShowSubscriptionModal(true)
-      return
-    }
-
-    setSubmitting(true)
+    setSubmitting(true);
     try {
       const response = await fetch("/api/dashboard/home", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id, title, content: editor.getHTML() }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to submit journal entry")
+        body: JSON.stringify({
+          userId: user.user.id,
+          title,
+          content: editor.getHTML(),
+        }),
+      });
+      const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
       }
 
-      const data = await response.json()
-
-      setCurrentAnalysis(data.journal)
-      setShowChatbot(true) // Show chatbot after analysis is complete
+      setCurrentAnalysis(data.journal);
+      setShowChatbot(true); // Show chatbot after analysis is complete
       toast({
         title: "Success",
         description: "Journal entry submitted successfully!",
         className: "bg-gradient-to-r from-purple-500 to-pink-500 text-white",
-      })
-
-      // Reset form
-      setTitle("")
-      editor?.commands.clearContent()
+      });
     } catch (error) {
-      console.error("Error submitting journal:", error)
+      console.error("Error submitting journal:", error);
       toast({
         title: "Error",
         description: "Failed to submit journal entry. Please try again.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   const renderAnalysis = (analysis) => {
-    if (!analysis) return null
+    if (!analysis) return null;
 
     switch (currentAnalysisTab) {
       case "summary":
@@ -175,29 +406,55 @@ export default function MoodJournal() {
               ) : (
                 <ThumbsDown className="text-red-500" />
               )}
-              <h3 className="text-lg font-semibold">{analysis.moodScore > 5 ? "Positive" : "Negative"} Sentiment</h3>
+              <h3 className="text-lg font-semibold">
+                {analysis.moodScore > 5 ? "Positive" : "Negative"} Sentiment
+              </h3>
             </div>
             <p className="text-gray-600">{analysis.summary}</p>
           </div>
-        )
+        );
 
       case "emotions":
         return (
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <ThumbsUp className="text-green-500" />
+              <Heart className="text-red-500" />
               <h3 className="text-lg font-semibold">Emotional Analysis</h3>
             </div>
-            <p className="text-gray-600">Primary emotion: {analysis.emotions?.primary || "Not available"}</p>
-            <div className="flex flex-wrap gap-2">
-              {analysis.emotions?.secondary?.map((emotion, index) => (
-                <span key={index} className="px-2 py-1 bg-gray-100 rounded-full text-sm">
-                  {emotion}
-                </span>
-              ))}
+            <div className="space-y-2">
+              <p className="font-medium">
+                Primary Emotion: {analysis.emotions.primary}
+              </p>
+              <p className="text-sm text-gray-600">
+                Intensity: {analysis.emotions.intensity}
+              </p>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {analysis.emotions.secondary.map((emotion, index) => (
+                  <span
+                    key={index}
+                    className="px-2 py-1 bg-gray-100 rounded-full text-sm"
+                  >
+                    {emotion}
+                  </span>
+                ))}
+              </div>
             </div>
+            <ResponsiveContainer width="100%" height={200}>
+              <LineChart
+                data={[
+                  { time: "Morning", intensity: 5 },
+                  { time: "Afternoon", intensity: 3 },
+                  { time: "Evening", intensity: 7 },
+                ]}
+              >
+                <XAxis dataKey="time" />
+                <YAxis />
+                <RechartsTooltip />
+                <Line type="monotone" dataKey="intensity" stroke="#8b5cf6" />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
-        )
+        );
 
       case "topics":
         return (
@@ -207,39 +464,74 @@ export default function MoodJournal() {
               <h3 className="text-lg font-semibold">Key Topics</h3>
             </div>
             <div className="flex flex-wrap gap-2">
-              {analysis.topics?.map((topic, index) => (
-                <span key={index} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full">
+              {analysis.topics.map((topic, index) => (
+                <span
+                  key={index}
+                  className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full"
+                >
                   {topic}
                 </span>
               ))}
             </div>
           </div>
-        )
+        );
 
       case "suggestions":
         return (
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <ThumbsUp className="text-green-500" />
+              <Lightbulb className="text-yellow-500" />
               <h3 className="text-lg font-semibold">Suggestions</h3>
             </div>
-            <p className="text-gray-600">{analysis.suggestions?.immediate || "No immediate suggestions available."}</p>
-            <p className="text-gray-600">{analysis.suggestions?.longTerm || "No long-term suggestions available."}</p>
+            <div className="space-y-3">
+              <div>
+                <h4 className="font-medium">Immediate Action:</h4>
+                <p className="text-gray-600">
+                  {analysis.suggestions.immediate}
+                </p>
+              </div>
+              <div>
+                <h4 className="font-medium">Long-term Recommendation:</h4>
+                <p className="text-gray-600">{analysis.suggestions.longTerm}</p>
+              </div>
+              <div>
+                <h4 className="font-medium">Recommended Activities:</h4>
+                <ul className="list-disc list-inside text-gray-600">
+                  {analysis.suggestions.activities.map((activity, index) => (
+                    <li key={index}>{activity}</li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium">Helpful Resources:</h4>
+                <ul className="list-disc list-inside text-gray-600">
+                  {analysis.suggestions.resources.map((resource, index) => (
+                    <li key={index}>{resource}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
-        )
+        );
     }
-  }
+  };
 
   return (
     <div className="container mx-auto p-4 font-sans">
-      {/* Subscription Banner */}
-      {!loading && !status.isSubscribed && status.entriesRemaining <= 2 && status.entriesRemaining > 0 && (
-        <SubscriptionPrompt status={status} variant="banner" />
-      )}
+      {!loading &&
+        !status.isSubscribed &&
+        status.entriesRemaining <= 2 &&
+        status.entriesRemaining > 0 && (
+          <SubscriptionPrompt status={status} variant="banner" />
+        )}
 
       {/* Subscription Modal */}
       {showSubscriptionModal && (
-        <SubscriptionPrompt status={status} variant="modal" onClose={() => setShowSubscriptionModal(false)} />
+        <SubscriptionPrompt
+          status={status}
+          variant="modal"
+          onClose={() => setShowSubscriptionModal(false)}
+        />
       )}
 
       <div className="flex justify-between items-center mb-6">
@@ -255,20 +547,38 @@ export default function MoodJournal() {
         <TooltipProvider>
           <Tooltip open={infoOpen} onOpenChange={setInfoOpen}>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setInfoOpen(!infoOpen)}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full"
+                onClick={() => setInfoOpen(!infoOpen)}
+              >
                 <Info className="h-5 w-5 text-purple-600" />
               </Button>
             </TooltipTrigger>
             <TooltipContent className="max-w-sm p-4 bg-white shadow-lg rounded-lg border border-purple-100">
               <div className="space-y-2">
-                <h3 className="font-semibold text-purple-700">How to Use This Journal</h3>
+                <h3 className="font-semibold text-purple-700">
+                  How to Use This Journal
+                </h3>
                 <ol className="text-sm space-y-1 text-gray-600">
                   <li>1. Enter a meaningful title for your entry</li>
-                  <li>2. Write your thoughts, feelings, and experiences in the journal area</li>
+                  <li>
+                    2. Write your thoughts, feelings, and experiences in the
+                    journal area
+                  </li>
                   <li>3. Use the formatting tools to organize your content</li>
-                  <li>4. Click "Save Entry" to submit and receive an AI-powered analysis</li>
-                  <li>5. Review your personalized insights in the Analysis section</li>
-                  <li>6. Chat with the AI assistant for deeper insights about your entry</li>
+                  <li>
+                    4. Click "Save Entry" to submit and receive an AI-powered
+                    analysis
+                  </li>
+                  <li>
+                    5. Review your personalized insights in the Analysis section
+                  </li>
+                  <li>
+                    6. Chat with the AI assistant for deeper insights about your
+                    entry
+                  </li>
                 </ol>
               </div>
             </TooltipContent>
@@ -284,8 +594,8 @@ export default function MoodJournal() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          {/* Subscription Prompt (inline) */}
-          {!loading && !status.isSubscribed && status.entriesRemaining <= 1 && (
+         
+         {!loading && !status.isSubscribed && status.entriesRemaining <= 1 && (
             <SubscriptionPrompt status={status} variant="inline" />
           )}
 
@@ -300,7 +610,10 @@ export default function MoodJournal() {
                   </span>
                 )}
               </CardTitle>
-              <CardDescription>Capture your thoughts and feelings</CardDescription>
+
+              <CardDescription>
+                Capture your thoughts and feelings
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="relative">
@@ -322,24 +635,40 @@ export default function MoodJournal() {
                   <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
                     <div className="flex bg-white rounded-lg shadow-lg border border-purple-100 overflow-hidden">
                       <Button
-                        onClick={() => editor.chain().focus().toggleBold().run()}
-                        className={editor.isActive("bold") ? "bg-purple-100" : "bg-white"}
+                        onClick={() =>
+                          editor.chain().focus().toggleBold().run()
+                        }
+                        className={
+                          editor.isActive("bold") ? "bg-purple-100" : "bg-white"
+                        }
                         variant="ghost"
                         size="sm"
                       >
                         <Bold size={14} />
                       </Button>
                       <Button
-                        onClick={() => editor.chain().focus().toggleItalic().run()}
-                        className={editor.isActive("italic") ? "bg-purple-100" : "bg-white"}
+                        onClick={() =>
+                          editor.chain().focus().toggleItalic().run()
+                        }
+                        className={
+                          editor.isActive("italic")
+                            ? "bg-purple-100"
+                            : "bg-white"
+                        }
                         variant="ghost"
                         size="sm"
                       >
                         <Italic size={14} />
                       </Button>
                       <Button
-                        onClick={() => editor.chain().focus().toggleHighlight().run()}
-                        className={editor.isActive("highlight") ? "bg-purple-100" : "bg-white"}
+                        onClick={() =>
+                          editor.chain().focus().toggleHighlight().run()
+                        }
+                        className={
+                          editor.isActive("highlight")
+                            ? "bg-purple-100"
+                            : "bg-white"
+                        }
                         variant="ghost"
                         size="sm"
                       >
@@ -375,7 +704,12 @@ export default function MoodJournal() {
             <CardFooter>
               <Button
                 onClick={handleSubmit}
-                disabled={submitting || !title || !editor?.getHTML() || editor?.getHTML() === "<p></p>" || !user}
+                disabled={
+                  submitting ||
+                  !title ||
+                  !editor?.getHTML() ||
+                  editor?.getHTML() === "<p></p>"
+                }
                 className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-all duration-300 h-12 rounded-lg"
               >
                 {submitting ? (
@@ -420,11 +754,17 @@ export default function MoodJournal() {
           <Card className="bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg border-blue-100">
             <CardHeader>
               <CardTitle className="text-2xl text-blue-700">Analysis</CardTitle>
-              <CardDescription>Insights from your current entry</CardDescription>
+              <CardDescription>
+                Insights from your current entry
+              </CardDescription>
             </CardHeader>
             <CardContent>
               {currentAnalysis ? (
-                <Tabs defaultValue="summary" onValueChange={setCurrentAnalysisTab} className="space-y-4">
+                <Tabs
+                  defaultValue="summary"
+                  onValueChange={setCurrentAnalysisTab}
+                  className="space-y-4"
+                >
                   <TabsList className="grid grid-cols-4 w-full p-1 bg-blue-100 rounded-lg">
                     <TabsTrigger
                       value="summary"
@@ -463,7 +803,10 @@ export default function MoodJournal() {
                   >
                     {renderAnalysis(currentAnalysis.analysis)}
                   </TabsContent>
-                  <TabsContent value="topics" className="mt-6 p-4 bg-white rounded-lg border border-blue-100 shadow-sm">
+                  <TabsContent
+                    value="topics"
+                    className="mt-6 p-4 bg-white rounded-lg border border-blue-100 shadow-sm"
+                  >
                     {renderAnalysis(currentAnalysis.analysis)}
                   </TabsContent>
                   <TabsContent
@@ -478,9 +821,12 @@ export default function MoodJournal() {
                   <div className="inline-flex justify-center items-center w-16 h-16 rounded-full bg-blue-100 text-blue-600 mb-4">
                     <BookOpen className="h-8 w-8" />
                   </div>
-                  <p className="text-center text-gray-500">Submit a journal entry to see your personalized analysis</p>
+                  <p className="text-center text-gray-500">
+                    Submit a journal entry to see your personalized analysis
+                  </p>
                   <p className="text-sm text-gray-400 mt-2">
-                    Your thoughts will be processed with AI to provide meaningful insights
+                    Your thoughts will be processed with AI to provide
+                    meaningful insights
                   </p>
                 </div>
               )}
@@ -499,5 +845,5 @@ export default function MoodJournal() {
         />
       )}
     </div>
-  )
+  );
 }
