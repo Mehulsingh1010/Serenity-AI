@@ -217,16 +217,7 @@ export default function ModernSidebar() {
           />
 
           {/* Expand/collapse button */}
-          <motion.button
-            onClick={toggleExpanded}
-            className="absolute bottom-4 -right-3 h-8 w-8 flex items-center justify-center bg-amber-100 rounded-full shadow-md border border-amber-200 text-amber-800 hover:bg-amber-200 transition-colors"
-            animate={{ rotate: isExpanded ? 0 : 180 }}
-            transition={{ duration: 0.4 }}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </motion.button>
+          
         </motion.div>
       </div>
     </>
