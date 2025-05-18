@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 // import  { SubscriptionStatus } from "@/hooks/use-subscription"
 
 
-export function SubscriptionPrompt({ status, onClose, variant = "inline" }) {
+const SubscriptionPrompt=({ status, onClose, variant = "inline" })=> {
   const router = useRouter()
 
   if (status.isSubscribed) return null
@@ -131,3 +131,6 @@ export function SubscriptionPrompt({ status, onClose, variant = "inline" }) {
     </Card>
   )
 }
+
+
+export default SubscriptionPrompt
