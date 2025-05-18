@@ -20,7 +20,7 @@ export const metadata = {
     siteName: "SerenityAI +",
     images: [
       {
-        url: "/logo1.png",
+        url: "/mood.png",
         width: 1200,
         height: 630,
         alt: "SerenityAI Preview Image",
