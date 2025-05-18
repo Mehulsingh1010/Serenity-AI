@@ -22,6 +22,9 @@ import { StickyNote } from "./_components/sticky-note"
 import { NotebookSpiral } from "./_components/notebook-spiral"
 import { HighlightText } from "./_components/highlight-text"
 
+
+
+
 export default function LandingPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("journal")
@@ -104,7 +107,7 @@ export default function LandingPage() {
                 initial={{ y: -50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="relative w-24 h-24 mb-4"
+                className="relative w-50 h-50 mb-4"
               >
                 <Image src="/logo1.png" alt="Serenity AI" height={200} width={200} className="object-contain" />
               </motion.div>
@@ -151,7 +154,7 @@ export default function LandingPage() {
                 >
                   <div className="relative">
                     <PolaroidImage
-                      src="/hero.png"
+                      src="/2nd.png"
                       alt="Dashboard Preview"
                       caption="Your personal dashboard"
                       rotate={2}
@@ -266,7 +269,7 @@ export default function LandingPage() {
                     <div className="flex-1">
                       <div className="relative">
                         <PolaroidImage
-                          src="/first.png"
+                          src="/mood.png"
                           alt="Journal Interface"
                           caption="Your digital journal"
                           rotate={-1}
@@ -282,6 +285,7 @@ export default function LandingPage() {
                   </div>
                 </JournalPage>
               )}
+
 
               {activeTab === "insights" && (
                 <JournalPage>
@@ -326,6 +330,7 @@ export default function LandingPage() {
                 </JournalPage>
               )}
 
+
               {activeTab === "mood" && (
                 <JournalPage>
                   <div className="flex flex-col md:flex-row gap-8 items-center">
@@ -356,7 +361,7 @@ export default function LandingPage() {
                     </div>
                     <div className="flex-1">
                       <div className="relative">
-                        <PolaroidImage src="/dash.png" alt="Mood Tracking" caption="Your mood journey" rotate={-2} />
+                        <PolaroidImage src="/mood.png" alt="Mood Tracking" caption="Your mood journey" rotate={-2} />
                         <StickyNote
                           text="I can see my progress over time!"
                           position={{ bottom: -30, right: -20 }}
@@ -371,6 +376,7 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
+
 
         {/* Testimonials Section */}
         <section className="py-20 relative">
@@ -408,6 +414,7 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
+
 
         {/* About Section */}
         <section ref={aboutRef} className="py-20 relative">

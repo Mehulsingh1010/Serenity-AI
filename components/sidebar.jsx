@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { UserButton, useUser, useClerk } from "@clerk/nextjs";
 import {
   Home,
@@ -15,6 +15,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Zap,
+  LogOut,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { useRouter, usePathname } from "next/navigation";
@@ -33,6 +34,7 @@ const sidebarItems = [
     href: "/dashboard/meditation-center",
   },
   { title: "Settings", icon: Settings, href: "/dashboard/settings" },
+  { title: "Subscription", icon: Sparkles, href: "/dashboard/subscription" }
 ];
 
 export default function ModernSidebar() {
@@ -43,6 +45,7 @@ export default function ModernSidebar() {
   const { signOut } = useClerk();
   const router = useRouter();
   const pathname = usePathname();
+  const sidebarRef = useRef(null);
   const { status } = {
     status: {
       isSubscribed: false,
@@ -59,12 +62,45 @@ export default function ModernSidebar() {
     }
   }, [pathname]);
 
+  // Effect to close sidebar when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        isMobileOpen &&
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target)
+      ) {
+        setIsMobileOpen(false);
+      }
+    }
+
+    // Add event listener
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    
+    // Cleanup
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, [isMobileOpen]);
+
+  // Close sidebar when route changes
+  useEffect(() => {
+    setIsMobileOpen(false);
+  }, [pathname]);
+
   const toggleMobileSidebar = () => setIsMobileOpen(!isMobileOpen);
+  const toggleExpanded = () => setIsExpanded(!isExpanded);
 
   const handleSignOut = async () => {
     await signOut();
     router.push("/");
     router.refresh();
+  };
+
+  const handleNavItemClick = () => {
+    setIsMobileOpen(false);
   };
 
   return (
@@ -103,10 +139,25 @@ export default function ModernSidebar() {
         </div>
       </div>
 
+      {/* Mobile Sidebar Overlay */}
+      <AnimatePresence>
+        {isMobileOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="md:hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-30"
+            onClick={() => setIsMobileOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Mobile Sidebar (animated) */}
       <AnimatePresence>
         {isMobileOpen && (
           <motion.div
+            ref={sidebarRef}
             initial={{ x: -280, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -280, opacity: 0 }}
@@ -122,6 +173,7 @@ export default function ModernSidebar() {
                 pathname={pathname}
                 isExpanded={true}
                 isMobile={true}
+                onNavItemClick={handleNavItemClick}
               />
             </div>
           </motion.div>
@@ -129,7 +181,7 @@ export default function ModernSidebar() {
       </AnimatePresence>
 
       {/* Desktop Sidebar */}
-<div className="hidden md:block fixed left-6 top-6 bottom-6 z-40 border-2 rounded-lg border-amber-200">
+      <div className="hidden md:block fixed left-6 top-6 bottom-6 z-40 border-2 rounded-lg border-amber-200">
         <motion.div
           initial={{ x: 0 }}
           animate={{
@@ -161,17 +213,20 @@ export default function ModernSidebar() {
             pathname={pathname}
             isExpanded={isExpanded}
             isMobile={false}
+            onNavItemClick={() => {}}
           />
 
           {/* Expand/collapse button */}
-          {/* <motion.button
-            className="absolute top-1/2 -right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md z-10 text-purple-700 hover:text-purple-900 border border-amber-200 transition-colors"
+          <motion.button
             onClick={toggleExpanded}
+            className="absolute bottom-4 -right-3 h-8 w-8 flex items-center justify-center bg-amber-100 rounded-full shadow-md border border-amber-200 text-amber-800 hover:bg-amber-200 transition-colors"
+            animate={{ rotate: isExpanded ? 0 : 180 }}
+            transition={{ duration: 0.4 }}
             whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
+            whileTap={{ scale: 0.9 }}
           >
-            {isExpanded ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
-          </motion.button> */}
+            <ChevronLeft className="h-4 w-4" />
+          </motion.button>
         </motion.div>
       </div>
     </>
@@ -187,6 +242,7 @@ function SidebarContent({
   pathname,
   isExpanded,
   isMobile,
+  onNavItemClick,
 }) {
   return (
     <div className="flex flex-col h-full text-amber-900 relative z-10">
@@ -211,14 +267,14 @@ function SidebarContent({
       </Link>
 
       {/* Main content area - navigation and subscription */}
-      <div className="flex-1 overflow-auto overflow-y-hidden">
+      <div className="flex-1 overflow-auto overflow-y-auto">
         <div className="px-2 py-4">
           {/* Navigation Items First */}
           <nav>
             <ul className="space-y-3">
               {sidebarItems.map((item, index) => (
                 <li key={item.href}>
-                  <Link href={item.href}>
+                  <Link href={item.href} onClick={onNavItemClick}>
                     <motion.div
                       className={cn(
                         "relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all",
@@ -273,123 +329,7 @@ function SidebarContent({
           </nav>
 
           {/* Subscription Section Below Navigation */}
-          <div className="mt-6 px-3">
-            {/* Subscription Nav Item */}
-            <Link href="/dashboard/subscription">
-              <motion.div
-                className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-xl transition-all mb-4",
-                  pathname === "/dashboard/subscription"
-                    ? "bg-purple-100 text-purple-800"
-                    : "text-amber-800 hover:bg-amber-100"
-                )}
-                whileHover={{
-                  scale: 1.02,
-                  transition: { duration: 0.2 },
-                }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <div
-                  className={cn(
-                    "relative z-10 flex items-center justify-center w-8 h-8",
-                    pathname === "/dashboard/subscription" &&
-                      "bg-purple-200 rounded-lg"
-                  )}
-                >
-                  <Sparkles className="h-5 w-5" />
-
-                  {/* Animated glow effect for active item */}
-                  {pathname === "/dashboard/subscription" && (
-                    <motion.div
-                      layoutId="activeGlow"
-                      className="absolute inset-0 bg-gradient-to-r from-purple-200 to-amber-200 rounded-lg blur-sm"
-                      transition={{
-                        type: "spring",
-                        bounce: 0.2,
-                        duration: 0.6,
-                      }}
-                    />
-                  )}
-                </div>
-
-                {(isExpanded || isMobile) && (
-                  <motion.span
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -10 }}
-                    transition={{ duration: 0.3, delay: 0.1 }}
-                    className="text-base font-medium font-handwriting relative z-10"
-                  >
-                    Subscription
-                  </motion.span>
-                )}
-
-                {!status.isSubscribed && (isExpanded || isMobile) && (
-                  <Badge
-                    variant="outline"
-                    className="ml-auto bg-yellow-100 text-amber-800 border-amber-300"
-                  >
-                    Upgrade
-                  </Badge>
-                )}
-              </motion.div>
-            </Link>
-
-            {/* Subscription Status Card */}
-            {!status.isSubscribed && (isExpanded || isMobile) && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-                className="mb-4 p-4 bg-amber-100/50 rounded-xl border border-amber-200 shadow-sm"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <Sparkles className="h-4 w-4 text-amber-600" />
-                  <span className="text-sm font-medium font-handwriting text-amber-800">
-                    Free Plan
-                  </span>
-                </div>
-                <p className="text-xs text-amber-700 mb-3 font-handwriting">
-                  {status.entriesRemaining > 0
-                    ? `${status.entriesRemaining} entries remaining`
-                    : "You've reached your free entry limit"}
-                </p>
-                <Button
-                  size="sm"
-                  className="w-full bg-purple-100 hover:bg-purple-200 text-purple-700 font-handwriting border border-purple-200 group relative overflow-hidden"
-                  onClick={() => router.push("/dashboard/subscription")}
-                >
-                  <span className="relative z-10">Upgrade</span>
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-purple-300 to-amber-300 opacity-0 group-hover:opacity-100 transition-opacity"
-                    initial={{ x: "-100%" }}
-                    whileHover={{ x: "0%" }}
-                    transition={{ duration: 0.4 }}
-                  />
-                  <Zap className="w-4 h-4 ml-1 relative z-10" />
-                </Button>
-              </motion.div>
-            )}
-
-            {status.isSubscribed && (isExpanded || isMobile) && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-                className="mb-4 p-4 bg-gradient-to-r from-purple-100/50 to-amber-100/50 rounded-xl border border-amber-200 shadow-sm"
-              >
-                <div className="flex items-center gap-2">
-                  <Crown className="h-4 w-4 text-amber-600" />
-                  <span className="text-sm font-medium font-handwriting text-amber-800">
-                    {status.plan === "premium" ? "Premium" : "Annual"} Plan
-                  </span>
-                </div>
-                <p className="text-xs text-amber-700 mt-1 font-handwriting">
-                  Unlimited entries & features
-                </p>
-              </motion.div>
-            )}
-          </div>
+          
         </div>
       </div>
 
@@ -441,7 +381,30 @@ function SidebarContent({
             </motion.div>
           )}
         </motion.div>
+
+        {/* Explicit sign out button */}
+        <motion.button
+          onClick={handleSignOut}
+          className="w-full flex items-center gap-3 px-4 py-3 text-amber-800 hover:bg-amber-100 rounded-b-xl transition-all"
+          whileHover={{
+            scale: 1.02,
+            transition: { duration: 0.2 },
+          }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <LogOut className="h-5 w-5" />
+          {(isExpanded || isMobile) && (
+            <span className="text-base font-medium font-handwriting">
+              Sign Out
+            </span>
+          )}
+        </motion.button>
       </div>
     </div>
   );
 }
+
+
+
+
+
