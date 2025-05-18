@@ -10,8 +10,8 @@ export const metadata = {
   title: "SerenityAI +",
   description: "Your personal AI-powered journaling companion",
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    icon: "/logo1.png",
+    apple: "/logo1.png",
   },
   openGraph: {
     title: "SerenityAI +",
@@ -20,7 +20,7 @@ export const metadata = {
     siteName: "SerenityAI +",
     images: [
       {
-        url: "/preview.png",
+        url: "/logo1.png",
         width: 1200,
         height: 630,
         alt: "SerenityAI Preview Image",
@@ -33,7 +33,7 @@ export const metadata = {
     title: "SerenityAI +",
     description: "Your personal AI-powered journaling companion",
     site: "@your_twitter_handle",
-    images: ["/preview.png"],
+    images: ["/logo1.png"],
   },
   themeColor: "#ffffff",
 };

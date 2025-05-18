@@ -32,6 +32,13 @@ export default function LandingPage() {
   const featuresRef = useRef<HTMLDivElement>(null) as RefObject<HTMLDivElement>
   const aboutRef = useRef<HTMLDivElement>(null) as RefObject<HTMLDivElement>
 
+  const FeaturePoint = ({ text }: { text: string }) => (
+  <div className="flex items-start gap-2">
+    <span className="text-amber-800 font-bold">•</span>
+    <p className="text-gray-700">{text}</p>
+  </div>
+);
+
   // Loading animation
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -93,289 +100,308 @@ export default function LandingPage() {
         <NotebookSpiral />
 
         {/* Hero Section */}
-        <section className="relative pt-16 pb-24">
-          <div className="absolute inset-0 bg-[url('/paper-texture.png')] opacity-10 z-0" />
+        <section className="relative pt-16 pb-24 min-h-[90vh] flex items-center">
+  <div className="absolute inset-0 bg-[url('/paper-texture.png')] opacity-10 z-0" />
 
-          {/* Ink blots */}
-          <InkBlot color="purple" size={300} position={{ top: "10%", right: "5%" }} opacity={0.07} rotate={15} />
-          <InkBlot color="blue" size={250} position={{ bottom: "15%", left: "8%" }} opacity={0.05} rotate={-20} />
+  {/* Enhanced decorative elements */}
+  <InkBlot color="purple" size={300} position={{ top: "10%", right: "5%" }} opacity={0.07} rotate={15} />
+  <InkBlot color="blue" size={250} position={{ bottom: "15%", left: "8%" }} opacity={0.05} rotate={-20} />
+  <InkBlot color="amber" size={200} position={{ top: "40%", right: "15%" }} opacity={0.04} rotate={10} />
 
-          <div className="container px-6 mx-auto relative z-10">
-            <div className="flex flex-col items-center justify-center mb-12">
-              <WashiTape color="purple" width={150} rotate={-3} />
-              <motion.div
-                initial={{ y: -50, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="relative w-50 h-50 mb-4"
-              >
-                <Image src="/logo1.png" alt="Serenity AI" height={200} width={200} className="object-contain" />
-              </motion.div>
+  {/* Adding more decorative elements */}
+  <div className="absolute top-1/4 left-1/3 w-8 h-8 bg-amber-200 rounded-full opacity-20 animate-pulse" />
+  <div className="absolute bottom-1/3 right-1/4 w-6 h-6 bg-purple-200 rounded-full opacity-20 animate-pulse" />
+  <div className="absolute top-2/3 left-1/4 w-10 h-10 bg-blue-200 rounded-full opacity-20 animate-pulse" />
+
+  <div className="container px-4 sm:px-6 mx-auto relative z-10 w-full">
+    <div className="flex flex-col items-center justify-center mb-8 sm:mb-12">
+      <WashiTape color="purple" width={150} rotate={-3} />
+      <motion.div
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="relative w-40 h-40 sm:w-50 sm:h-50 mb-4"
+      >
+        <Image 
+          src="/logo1.png" 
+          alt="Serenity AI" 
+          height={200} 
+          width={200} 
+          className="object-contain" 
+          priority 
+        />
+      </motion.div>
+    </div>
+
+    <JournalPage className="max-w-6xl mx-auto">
+      <div className="text-center mb-6 sm:mb-8">
+        <HandwrittenText
+          text="Serenity AI"
+          className="text-4xl sm:text-6xl md:text-7xl font-bold text-purple-800 mb-2"
+          delay={0.5}
+        />
+        <HighlightText color="yellow">
+          <h2 className="text-xl sm:text-2xl text-gray-700 italic">Your personal journal for emotional well-being</h2>
+        </HighlightText>
+      </div>
+
+      {/* Improved layout with better spacing for larger screens */}
+      <div className="flex flex-col md:flex-row items-center gap-6 sm:gap-12 mt-8 sm:mt-12">
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.7 }}
+          className="flex-1 w-full md:max-w-xl"
+        >
+          <PaperNote className="p-4 sm:p-6 rotate-[-1deg] md:min-h-[280px] flex flex-col justify-between">
+            <div>
+              <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3 text-purple-800">Dear Friend,</h3>
+              <p className="mb-3 sm:mb-4 text-sm sm:text-base text-gray-700">
+                Welcome to your personal space for reflection and growth. Serenity AI is like having a thoughtful
+                companion who listens, understands, and guides you through your emotional journey.
+              </p>
+              <p className="text-sm sm:text-base text-gray-700">
+                Write your thoughts, track your moods, and discover insights that help you understand yourself
+                better. Let's begin this journey together.
+              </p>
             </div>
-
-            <JournalPage>
-              <div className="text-center mb-8">
-                <HandwrittenText
-                  text="Serenity AI"
-                  className="text-6xl sm:text-7xl font-bold text-purple-800 mb-2"
-                  delay={0.5}
-                />
-                <HighlightText color="yellow">
-                  <h2 className="text-2xl text-gray-700 italic">Your personal journal for emotional well-being</h2>
-                </HighlightText>
-              </div>
-
-              <div className="flex flex-col md:flex-row items-center gap-8 mt-12">
-                <motion.div
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.7 }}
-                  className="flex-1"
-                >
-                  <PaperNote className="p-6 rotate-[-1deg]">
-                    <h3 className="text-xl font-semibold mb-3 text-purple-800">Dear Friend,</h3>
-                    <p className="mb-4 text-gray-700">
-                      Welcome to your personal space for reflection and growth. Serenity AI is like having a thoughtful
-                      companion who listens, understands, and guides you through your emotional journey.
-                    </p>
-                    <p className="text-gray-700">
-                      Write your thoughts, track your moods, and discover insights that help you understand yourself
-                      better. Let's begin this journey together.
-                    </p>
-                    <div className="mt-4 text-right text-gray-600 italic">— Your Serenity Journal</div>
-                  </PaperNote>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.9 }}
-                  className="flex-1"
-                >
-                  <div className="relative">
-                    <PolaroidImage
-                      src="/2nd.png"
-                      alt="Dashboard Preview"
-                      caption="Your personal dashboard"
-                      rotate={2}
-                    />
-                    <Paperclip position={{ top: -10, right: 20 }} rotate={10} />
-                  </div>
-                </motion.div>
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 1.2 }}
-                className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12"
-              >
-                <PaperButton href="/dashboard/home" primary>
-                  <span>Open Your Journal</span>
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </PaperButton>
-                <PaperButton href="/dashboard/home">
-                  <span>Take a Tour</span>
-                </PaperButton>
-              </motion.div>
-            </JournalPage>
-
-            {/* Scroll indicator */}
-            <motion.div
-              className="flex justify-center mt-12"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.5, duration: 0.8 }}
-            >
-              <motion.button
-                onClick={() => scrollToSection(featuresRef)}
-                className="flex flex-col items-center text-amber-800"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span className="text-sm font-medium mb-2">Explore Your Journal</span>
-                <motion.div animate={{ y: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M7 13L12 18L17 13"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M7 7L12 12L17 7"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </motion.div>
-              </motion.button>
-            </motion.div>
+            <div className="mt-3 sm:mt-4 text-right text-sm sm:text-base text-gray-600 italic">— Mehul</div>
+          </PaperNote>
+          
+          {/* Extra decorative element for visual interest */}
+          <div className="hidden md:block relative h-20 mt-4">
+            <WashiTape color="green" width={100} rotate={5} />
+            <WashiTape color="amber" width={80} rotate={-8} />
           </div>
-        </section>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.9 }}
+          className="flex-1 w-full mt-6 md:mt-0"
+        >
+          <div className="relative mx-auto max-w-xs sm:max-w-sm md:max-w-none">
+            <PolaroidImage
+              src="/2nd.png"
+              alt="Dashboard Preview"
+              caption="Your personal dashboard"
+              rotate={2}
+            />
+            <Paperclip position={{ top: -10, right: 20 }} rotate={10} />
+            
+            {/* Added sticky note for visual interest */}
+            <StickyNote
+              text="Track your emotional journey!"
+              position={{ bottom: -40, right: -10 }}
+              rotate={3}
+              color="yellow"
+            />
+          </div>
+        </motion.div>
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 1.2 }}
+        className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 sm:mt-16"
+      >
+        <PaperButton href="/dashboard/home" primary className="w-full sm:w-auto">
+          <span>Open Your Journal</span>
+          <ArrowRight className="w-4 h-4 ml-2" />
+        </PaperButton>
+        <PaperButton href="/dashboard/home" className="w-full sm:w-auto">
+          <span>Take a Tour</span>
+        </PaperButton>
+      </motion.div>
+      
+      {/* Added decorative doodles at the bottom for visual interest */}
+      <div className="mt-8 h-12 relative hidden md:block">
+        <div className="absolute left-1/4 top-1/2 transform -translate-y-1/2">
+          <svg width="50" height="25" viewBox="0 0 100 50" className="text-purple-300">
+            <path d="M10,25 Q30,5 50,25 T90,25" fill="none" stroke="currentColor" strokeWidth="2" />
+            <path d="M10,35 Q30,15 50,35 T90,35" fill="none" stroke="currentColor" strokeWidth="2" />
+          </svg>
+        </div>
+        <div className="absolute right-1/4 top-1/2 transform -translate-y-1/2">
+          <svg width="50" height="25" viewBox="0 0 100 50" className="text-amber-300">
+            <path d="M10,25 Q30,45 50,25 T90,25" fill="none" stroke="currentColor" strokeWidth="2" />
+            <path d="M10,15 Q30,35 50,15 T90,15" fill="none" stroke="currentColor" strokeWidth="2" />
+          </svg>
+        </div>
+      </div>
+    </JournalPage>
+
+    {/* Scroll indicator with improved visibility */}
+    <motion.div
+      className="flex justify-center mt-8 sm:mt-12"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 1.5, duration: 0.8 }}
+    >
+      <motion.button
+        onClick={() => scrollToSection(featuresRef)}
+        className="flex flex-col items-center text-amber-800 bg-white px-4 py-2 rounded-full shadow-sm"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <span className="text-xs sm:text-sm font-medium mb-1 sm:mb-2">Explore Your Journal</span>
+        <motion.div animate={{ y: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M7 13L12 18L17 13"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M7 7L12 12L17 7"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </motion.div>
+      </motion.button>
+    </motion.div>
+  </div>
+</section>
 
         {/* Features Section */}
         <section ref={featuresRef} className="py-20 relative">
-          <div className="absolute inset-0 bg-[url('/paper-texture.png')] opacity-10 z-0" />
+  <div className="absolute inset-0 bg-[url('/paper-texture.png')] opacity-10 z-0" />
 
-          <div className="container px-4 mx-auto relative z-10">
-            <div className="text-center mb-12">
-              <WashiTape color="green" width={200} rotate={2} />
-              <HandwrittenText text="Journal Features" className="text-4xl font-bold text-amber-800" delay={0.2} />
+  <div className="container px-4 mx-auto relative z-10">
+    <div className="text-center mb-12">
+      <WashiTape color="green" width={200} rotate={2} />
+      <HandwrittenText text="Journal Features" className="text-4xl font-bold text-amber-800" delay={0.2} />
+    </div>
+
+    <PaperTabs
+      tabs={[
+        { id: "journal", label: "Daily Journal", icon: <Book className="w-4 h-4" /> },
+        { id: "insights", label: "AI Insights", icon: <Sparkles className="w-4 h-4" /> },
+        { id: "mood", label: "Mood Tracking", icon: <Heart className="w-4 h-4" /> },
+      ]}
+      activeTab={activeTab}
+      onChange={setActiveTab}
+    />
+
+    <div className="mt-8">
+      {activeTab === "journal" && (
+        <JournalPage>
+          <div className="flex flex-col-reverse md:flex-row gap-8 items-center">
+            <div className="flex-1 space-y-4">
+              <HandwrittenText
+                text="Express Yourself Freely"
+                className="text-2xl font-bold text-purple-800 mb-4"
+                delay={0.2}
+              />
+              <p className="text-gray-700">
+                Your digital journal provides a safe space to express your thoughts and feelings without judgment. Write as little or as much as you want.
+              </p>
+              <div className="space-y-2">
+                <FeaturePoint text="Rich text formatting with emotional color coding" />
+                <FeaturePoint text="Voice-to-text for when you prefer speaking over typing" />
+                <FeaturePoint text="Attach photos, audio clips, and other media to your entries" />
+              </div>
             </div>
-
-            <PaperTabs
-              tabs={[
-                { id: "journal", label: "Daily Journal", icon: <Book className="w-4 h-4" /> },
-                { id: "insights", label: "AI Insights", icon: <Sparkles className="w-4 h-4" /> },
-                { id: "mood", label: "Mood Tracking", icon: <Heart className="w-4 h-4" /> },
-              ]}
-              activeTab={activeTab}
-              onChange={setActiveTab}
-            />
-
-            <div className="mt-8">
-              {activeTab === "journal" && (
-                <JournalPage>
-                  <div className="flex flex-col md:flex-row gap-8 items-center">
-                    <div className="flex-1">
-                      <HandwrittenText
-                        text="Express Yourself Freely"
-                        className="text-2xl font-bold text-purple-800 mb-4"
-                        delay={0.2}
-                      />
-                      <div className="space-y-4">
-                        <p className="text-gray-700">
-                          Your digital journal provides a safe space to express your thoughts and feelings without
-                          judgment. Write as little or as much as you want.
-                        </p>
-                        <div className="flex items-start gap-2">
-                          <span className="text-amber-800 font-bold">•</span>
-                          <p className="text-gray-700">Rich text formatting with emotional color coding</p>
-                        </div>
-                        <div className="flex items-start gap-2">
-                          <span className="text-amber-800 font-bold">•</span>
-                          <p className="text-gray-700">Voice-to-text for when you prefer speaking over typing</p>
-                        </div>
-                        <div className="flex items-start gap-2">
-                          <span className="text-amber-800 font-bold">•</span>
-                          <p className="text-gray-700">Attach photos, audio clips, and other media to your entries</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <div className="relative">
-                        <PolaroidImage
-                          src="/mood.png"
-                          alt="Journal Interface"
-                          caption="Your digital journal"
-                          rotate={-1}
-                        />
-                        <StickyNote
-                          text="I love how easy it is to express myself here!"
-                          position={{ bottom: -30, right: -20 }}
-                          rotate={5}
-                          color="yellow"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </JournalPage>
-              )}
-
-
-              {activeTab === "insights" && (
-                <JournalPage>
-                  <div className="flex flex-col md:flex-row gap-8 items-center">
-                    <div className="flex-1">
-                      <div className="relative">
-                        <PolaroidImage src="/third.png" alt="AI Insights" caption="Personalized insights" rotate={1} />
-                        <StickyNote
-                          text="The AI really understands my patterns!"
-                          position={{ bottom: -30, left: -20 }}
-                          rotate={-3}
-                          color="blue"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <HandwrittenText
-                        text="AI-Powered Insights"
-                        className="text-2xl font-bold text-purple-800 mb-4"
-                        delay={0.2}
-                      />
-                      <div className="space-y-4">
-                        <p className="text-gray-700">
-                          Our AI analyzes your journal entries to identify emotional patterns and provide personalized
-                          insights to help you understand yourself better.
-                        </p>
-                        <div className="flex items-start gap-2">
-                          <span className="text-amber-800 font-bold">•</span>
-                          <p className="text-gray-700">Emotion recognition and sentiment analysis</p>
-                        </div>
-                        <div className="flex items-start gap-2">
-                          <span className="text-amber-800 font-bold">•</span>
-                          <p className="text-gray-700">Pattern identification across entries</p>
-                        </div>
-                        <div className="flex items-start gap-2">
-                          <span className="text-amber-800 font-bold">•</span>
-                          <p className="text-gray-700">Personalized suggestions for emotional well-being</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </JournalPage>
-              )}
-
-
-              {activeTab === "mood" && (
-                <JournalPage>
-                  <div className="flex flex-col md:flex-row gap-8 items-center">
-                    <div className="flex-1">
-                      <HandwrittenText
-                        text="Track Your Emotional Journey"
-                        className="text-2xl font-bold text-purple-800 mb-4"
-                        delay={0.2}
-                      />
-                      <div className="space-y-4">
-                        <p className="text-gray-700">
-                          Visualize your emotional journey with our intuitive mood tracking tools. Identify patterns and
-                          triggers to better understand your emotional responses.
-                        </p>
-                        <div className="flex items-start gap-2">
-                          <span className="text-amber-800 font-bold">•</span>
-                          <p className="text-gray-700">Daily mood check-ins with customizable emotions</p>
-                        </div>
-                        <div className="flex items-start gap-2">
-                          <span className="text-amber-800 font-bold">•</span>
-                          <p className="text-gray-700">Visual charts and graphs to track progress</p>
-                        </div>
-                        <div className="flex items-start gap-2">
-                          <span className="text-amber-800 font-bold">•</span>
-                          <p className="text-gray-700">Identify correlations between activities and mood</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <div className="relative">
-                        <PolaroidImage src="/mood.png" alt="Mood Tracking" caption="Your mood journey" rotate={-2} />
-                        <StickyNote
-                          text="I can see my progress over time!"
-                          position={{ bottom: -30, right: -20 }}
-                          rotate={3}
-                          color="green"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </JournalPage>
-              )}
+            <div className="flex-1 w-full max-w-md mx-auto relative">
+              <PolaroidImage
+                src="/mood.png"
+                alt="Journal Interface"
+                caption="Your digital journal"
+                rotate={-1}
+              />
+              <StickyNote
+                text="I love how easy it is to express myself here!"
+                position={{ bottom: -30, right: -20 }}
+                rotate={5}
+                color="yellow"
+              />
             </div>
           </div>
-        </section>
+        </JournalPage>
+      )}
+
+      {activeTab === "insights" && (
+        <JournalPage>
+          <div className="flex flex-col md:flex-row gap-8 items-center">
+            <div className="flex-1 w-full max-w-md mx-auto relative">
+              <PolaroidImage
+                src="/third.png"
+                alt="AI Insights"
+                caption="Personalized insights"
+                rotate={1}
+              />
+              <StickyNote
+                text="The AI really understands my patterns!"
+                position={{ bottom: -30, left: -20 }}
+                rotate={-3}
+                color="blue"
+              />
+            </div>
+            <div className="flex-1 space-y-4">
+              <HandwrittenText
+                text="AI-Powered Insights"
+                className="text-2xl font-bold text-purple-800 mb-4"
+                delay={0.2}
+              />
+              <p className="text-gray-700">
+                Our AI analyzes your journal entries to identify emotional patterns and provide personalized insights to help you understand yourself better.
+              </p>
+              <div className="space-y-2">
+                <FeaturePoint text="Emotion recognition and sentiment analysis" />
+                <FeaturePoint text="Pattern identification across entries" />
+                <FeaturePoint text="Personalized suggestions for emotional well-being" />
+              </div>
+            </div>
+          </div>
+        </JournalPage>
+      )}
+
+      {activeTab === "mood" && (
+        <JournalPage>
+          <div className="flex flex-col-reverse md:flex-row gap-8 items-center">
+            <div className="flex-1 space-y-4">
+              <HandwrittenText
+                text="Track Your Emotional Journey"
+                className="text-2xl font-bold text-purple-800 mb-4"
+                delay={0.2}
+              />
+              <p className="text-gray-700">
+                Visualize your emotional journey with our intuitive mood tracking tools. Identify patterns and triggers to better understand your emotional responses.
+              </p>
+              <div className="space-y-2">
+                <FeaturePoint text="Daily mood check-ins with customizable emotions" />
+                <FeaturePoint text="Visual charts and graphs to track progress" />
+                <FeaturePoint text="Identify correlations between activities and mood" />
+              </div>
+            </div>
+            <div className="flex-1 w-full max-w-md mx-auto relative">
+              <PolaroidImage
+                src="/mood.png"
+                alt="Mood Tracking"
+                caption="Your mood journey"
+                rotate={-2}
+              />
+              <StickyNote
+                text="I can see my progress over time!"
+                position={{ bottom: -30, right: -20 }}
+                rotate={3}
+                color="green"
+              />
+            </div>
+          </div>
+        </JournalPage>
+      )}
+    </div>
+  </div>
+</section>
+
 
 
         {/* Testimonials Section */}
@@ -395,19 +421,19 @@ export default function LandingPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <TestimonialNote
                 content="Serenity AI has become my daily companion. I've noticed patterns in my emotions I never saw before, and the suggestions have really helped me manage my anxiety."
-                author="Sarah J."
+                author="Person"
                 color="yellow"
                 rotate={-2}
               />
               <TestimonialNote
                 content="As someone who's always struggled with journaling consistently, this app makes it so easy and rewarding. The insights feel personal and thoughtful."
-                author="Michael T."
+                author="Person"
                 color="blue"
                 rotate={1}
               />
               <TestimonialNote
                 content="I love how the mood tracking visualizes my emotional journey. It's helped me identify triggers and make positive changes in my daily routine."
-                author="Emily R."
+                author="Person"
                 color="green"
                 rotate={-1}
               />

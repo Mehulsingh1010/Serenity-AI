@@ -94,7 +94,7 @@ export default {
       fontFamily: {
         sans: ["var(--font-geist-sans)", "sans-serif"],
         mono: ["var(--font-geist-mono)", "monospace"],
-        handwriting: ["'Caveat'", "cursive"],
+        handwriting: ["Caveat", "cursive"], // correctly formatted
       },
     },
   },
