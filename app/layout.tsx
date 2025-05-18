@@ -1,19 +1,11 @@
-import { Geist, Azeret_Mono as Geist_Mono } from "next/font/google"
-import "./globals.css"
-import { ClerkProvider } from "@clerk/nextjs"
-import Provider from "./provider"
-// import { ModernSidebar } from "@/components/sidebar"
+import { Geist, Azeret_Mono as Geist_Mono, Caveat } from "next/font/google";
+import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
+import Provider from "./provider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-})
+// Font imports with CSS variables
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-})
-
+// Metadata for SEO/social
 export const metadata = {
   title: "SerenityAI +",
   description: "Your personal AI-powered journaling companion",
@@ -44,31 +36,31 @@ export const metadata = {
     images: ["/preview.png"],
   },
   themeColor: "#ffffff",
-  
 };
 
-function RootLayoutContent({ children }) {
+// Component: Root layout
+function RootLayoutContent({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body suppressHydrationWarning>
+    <html
+      lang="en"
+    >
+      <body
+        suppressHydrationWarning
+        className="min-h-screen bg-background font-handwriting"
+      >
         <Provider>
-          <div className="min-h-screen bg-background">
-            {/* <ModernSidebar /> */}
-            <main >
-              <div >{children}</div>
-            </main>
-          </div>
+          <main>{children}</main>
         </Provider>
       </body>
     </html>
-  )
+  );
 }
 
-export default function RootLayout({ children }) {
+// Component: Clerk wrapper
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
       <RootLayoutContent>{children}</RootLayoutContent>
     </ClerkProvider>
-  )
+  );
 }
-

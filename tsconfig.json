@@ -28,7 +28,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "app/dashboard/subscription/page.jsx"  ],
+, "app/dashboard/subscription/page.jsx", "tailwind.config.mjs", "components/sidebar.jsx"  ],
   "exclude": [
     "node_modules"
   ]

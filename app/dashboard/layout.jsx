@@ -1,4 +1,4 @@
-import { ModernSidebar } from '../../components/sidebar'
+import ModernSidebar from '../../components/sidebar'
 import React from 'react'
 
 function layout({ children }) {
